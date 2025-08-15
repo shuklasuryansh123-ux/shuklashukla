@@ -15,7 +15,7 @@ services:
     healthCheckPath: /health
     autoDeploy: true
     branch: main
-    repo: https://github.com/suryansh-shukla/shukla-law-firm
+    repo: https://github.com/shuklasuryansh123-ux/shuklashukla
     disk:
       name: data
       mountPath: /opt/render/project/src/data
