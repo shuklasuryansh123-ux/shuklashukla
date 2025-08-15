@@ -459,7 +459,8 @@ class AdminPanel {
                 date: new Date().toISOString()
             };
             
-            this.websiteData.blog.posts.push(newBlogPost);
+            this.websiteData.blogPosts = this.websiteData.blogPosts || [];
+            this.websiteData.blogPosts.push(newBlogPost);
             this.saveWebsiteData();
             
             this.showNotification('AI content generated and saved!', 'success');
@@ -755,9 +756,9 @@ class AdminPanel {
         
         // Broadcast changes to other tabs/windows
         if (typeof BroadcastChannel !== 'undefined') {
-            const channel = new BroadcastChannel('website-updates');
+            const channel = new BroadcastChannel('admin-updates');
             channel.postMessage({
-                type: 'content-updated',
+                type: 'content_update',
                 data: this.websiteData,
                 timestamp: new Date().toISOString()
             });
@@ -1493,7 +1494,7 @@ Service 3</textarea>
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    content: this.websiteData
+                    websiteData: this.websiteData
                 })
             });
             

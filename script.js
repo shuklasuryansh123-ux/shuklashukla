@@ -672,13 +672,21 @@ class ModernLawWebsite {
         }
     }
 
+    subscribeAdminUpdates() {
+		try {
+			const channel = new BroadcastChannel('admin-updates');
+			channel.onmessage = (event) => {
+				const { type, data } = event.data || {};
+				this.handleAdminUpdate(type, data);
+			};
+		} catch (e) {
+			console.log('BroadcastChannel not available:', e);
+		}
+	}
+
     setupAdminSync() {
         // Listen for changes from admin panel
-        const channel = new BroadcastChannel('admin-updates');
-        channel.onmessage = (event) => {
-            const { type, data } = event.data;
-            this.handleAdminUpdate(type, data);
-        };
+        this.subscribeAdminUpdates();
 
         // Listen for localStorage changes
         window.addEventListener('storage', (e) => {
