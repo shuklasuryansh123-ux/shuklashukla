@@ -160,6 +160,9 @@ app.get('/health', (req, res) => {
 app.get('/api/content/:section', async (req, res) => {
     try {
         const { section } = req.params;
+        if (!/^[a-zA-Z0-9_-]+$/.test(section)) {
+            return res.status(400).json({ error: 'Invalid section name' });
+        }
         const filePath = path.join(__dirname, 'content', `${section}.json`);
         
         const content = await fs.readFile(filePath, 'utf8');
@@ -173,6 +176,9 @@ app.get('/api/content/:section', async (req, res) => {
 app.post('/api/content/:section', async (req, res) => {
     try {
         const { section } = req.params;
+        if (!/^[a-zA-Z0-9_-]+$/.test(section)) {
+            return res.status(400).json({ error: 'Invalid section name' });
+        }
         const filePath = path.join(__dirname, 'content', `${section}.json`);
         
         await fs.writeFile(filePath, JSON.stringify(req.body, null, 2));
