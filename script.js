@@ -1,6 +1,7 @@
 // Modern Law Firm Website JavaScript
 class ModernLawWebsite {
     constructor() {
+        this.scrollEffectsInitialized = false;
         this.init();
     }
 
@@ -56,6 +57,8 @@ class ModernLawWebsite {
             if (typeof window !== 'undefined' && window.gsap) {
                 this.initializeGSAPAnimations();
             }
+            // Ensure scroll effects are initialized after content is visible
+            this.setupScrollEffects();
         };
 
         const loadingInterval = setInterval(() => {
@@ -205,6 +208,9 @@ class ModernLawWebsite {
         if (typeof ScrollTrigger === 'undefined' || typeof gsap === 'undefined') {
             return;
         }
+        if (this.scrollEffectsInitialized) {
+            return;
+        }
 
         // Header scroll effect
         ScrollTrigger.create({
@@ -271,6 +277,8 @@ class ModernLawWebsite {
                 }
             });
         });
+
+        this.scrollEffectsInitialized = true;
     }
 
     setupTrustedByAnimation() {
@@ -307,7 +315,8 @@ class ModernLawWebsite {
 
     handleNavClick(e) {
         e.preventDefault();
-        const target = e.target.getAttribute('href');
+        const link = e.currentTarget;
+        const target = link && link.getAttribute('href');
         if (target && target.startsWith('#') && target.length > 1) {
             this.scrollToSection(target);
         }
@@ -315,7 +324,8 @@ class ModernLawWebsite {
 
     handleSmoothScroll(e) {
         e.preventDefault();
-        const target = e.target.getAttribute('href');
+        const link = e.currentTarget;
+        const target = link && link.getAttribute('href');
         if (!target || target === '#') return;
         this.scrollToSection(target);
     }
@@ -449,11 +459,14 @@ class ModernLawWebsite {
         e.preventDefault();
         const form = e.target;
         const submitBtn = form.querySelector('.submit-btn');
-        const originalText = submitBtn.textContent;
+        const originalHTML = submitBtn ? submitBtn.innerHTML : '';
 
         // Show loading state
-        submitBtn.textContent = 'Sending...';
-        submitBtn.disabled = true;
+        if (submitBtn) {
+            submitBtn.innerHTML = '<span class="btn-text">Sending...</span><span class="btn-icon">⏳</span>';
+            submitBtn.disabled = true;
+            submitBtn.setAttribute('aria-busy', 'true');
+        }
 
         try {
             const formData = new FormData(form);
@@ -479,8 +492,11 @@ class ModernLawWebsite {
             console.error('Contact form error:', error);
             this.showNotification('An error occurred. Please try again.', 'error');
         } finally {
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
+            if (submitBtn) {
+                submitBtn.innerHTML = originalHTML;
+                submitBtn.disabled = false;
+                submitBtn.removeAttribute('aria-busy');
+            }
         }
     }
 
@@ -745,6 +761,10 @@ class ModernLawWebsite {
             rootMargin: '0px 0px -50px 0px'
         };
 
+        if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+            return;
+        }
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -766,6 +786,9 @@ class ModernLawWebsite {
         if (!toggleButton || !navigation) {
             return;
         }
+
+        // Set initial accessibility state
+        toggleButton.setAttribute('aria-expanded', 'false');
 
         const closeMenu = () => {
             navigation.classList.remove('open');
