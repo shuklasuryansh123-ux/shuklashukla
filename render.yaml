@@ -3,20 +3,13 @@ services:
     name: shukla-law-firm
     env: node
     plan: free
-    buildCommand: npm install
-    startCommand: npm start
+    region: oregon
+    buildCommand: npm run build
+    startCommand: node server.js
+    autoDeploy: true
     envVars:
+      - key: NODE_VERSION
+        value: 22
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
-      - key: SITE_URL
-        generateValue: true
     healthCheckPath: /health
-    autoDeploy: true
-    branch: main
-    repo: https://github.com/shuklasuryansh123-ux/shuklashukla
-    disk:
-      name: data
-      mountPath: /opt/render/project/src/data
-      sizeGB: 1
