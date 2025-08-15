@@ -35,31 +35,34 @@ class ModernLawWebsite {
             }, 3000);
         }
 
-        // Simulate loading progress
+        // Simulate loading progress with a safety fallback
         let progress = 0;
+        let completed = false;
         const progressFill = document.querySelector('.progress-fill');
         const progressText = document.querySelector('.progress-text');
-        
+
+        const finalizeLoad = () => {
+            if (completed) return;
+            completed = true;
+            // Hide loading screen and show main content
+            if (loadingScreen) loadingScreen.classList.add('fade-out');
+            if (mainContent) {
+                mainContent.style.display = 'block';
+                mainContent.classList.add('loaded');
+            }
+            // Initialize animations after content is loaded
+            this.initializeAnimations();
+            if (typeof window !== 'undefined' && window.gsap) {
+                this.initializeGSAPAnimations();
+            }
+        };
+
         const loadingInterval = setInterval(() => {
             progress += Math.random() * 15;
             if (progress >= 100) {
                 progress = 100;
                 clearInterval(loadingInterval);
-                
-                // Hide loading screen and show main content
-                setTimeout(() => {
-                    if (loadingScreen) loadingScreen.classList.add('fade-out');
-                    if (mainContent) {
-                        mainContent.style.display = 'block';
-                        mainContent.classList.add('loaded');
-                    }
-                    
-                    // Initialize animations after content is loaded
-                    this.initializeAnimations();
-                    if (typeof window !== 'undefined' && window.gsap) {
-                        this.initializeGSAPAnimations();
-                    }
-                }, 500);
+                setTimeout(finalizeLoad, 500);
             }
             
             if (progressFill) progressFill.style.width = `${progress}%`;
@@ -69,6 +72,9 @@ class ModernLawWebsite {
                 progressText.textContent = texts[textIndex] || texts[texts.length - 1];
             }
         }, 100);
+
+        // Hard fallback: never get stuck on loader
+        setTimeout(finalizeLoad, 5000);
     }
 
     initializeAnimations() {
@@ -137,6 +143,9 @@ class ModernLawWebsite {
     }
 
     initializeGSAPAnimations() {
+        if (typeof gsap === 'undefined') {
+            return;
+        }
         if (typeof gsap !== 'undefined' && typeof gsap.registerPlugin === 'function') {
             try {
                 if (typeof ScrollTrigger !== 'undefined') {
@@ -298,7 +307,7 @@ class ModernLawWebsite {
     handleNavClick(e) {
         e.preventDefault();
         const target = e.target.getAttribute('href');
-        if (target && target.startsWith('#')) {
+        if (target && target.startsWith('#') && target.length > 1) {
             this.scrollToSection(target);
         }
     }
@@ -306,10 +315,12 @@ class ModernLawWebsite {
     handleSmoothScroll(e) {
         e.preventDefault();
         const target = e.target.getAttribute('href');
+        if (!target || target === '#') return;
         this.scrollToSection(target);
     }
 
     scrollToSection(target) {
+        if (!target || target === '#') return;
         const element = document.querySelector(target);
         if (element) {
             if (typeof gsap !== 'undefined' && gsap && typeof gsap.to === 'function') {
@@ -536,12 +547,12 @@ class ModernLawWebsite {
             console.log('toggleChatGPT called');
             const body = document.getElementById('chatgpt-body');
             const toggle = document.querySelector('.chatgpt-toggle');
-
+            
             if (!body || !toggle) {
                 console.error('ChatGPT elements not found:', { body: !!body, toggle: !!toggle });
                 return;
             }
-
+            
             if (body.style.display === 'none') {
                 body.style.display = 'flex';
                 toggle.textContent = '▲';
@@ -592,6 +603,11 @@ class ModernLawWebsite {
                     this.sendChatMessage();
                 }
             });
+        }
+
+        // Expose global for inline onclick="sendChatMessage()"
+        if (typeof window !== 'undefined') {
+            window.sendChatMessage = this.sendChatMessage.bind(this);
         }
     }
 
@@ -693,17 +709,21 @@ class ModernLawWebsite {
         const element = document.querySelector(`[data-section="${section}"]`);
         
         if (element) {
-            gsap.to(element, {
-                opacity: 0,
-                duration: 0.3,
-                onComplete: () => {
-                    element.innerHTML = content;
-                    gsap.to(element, {
-                        opacity: 1,
-                        duration: 0.3
-                    });
-                }
-            });
+            if (typeof gsap !== 'undefined') {
+                gsap.to(element, {
+                    opacity: 0,
+                    duration: 0.3,
+                    onComplete: () => {
+                        element.innerHTML = content;
+                        gsap.to(element, {
+                            opacity: 1,
+                            duration: 0.3
+                        });
+                    }
+                });
+            } else {
+                element.innerHTML = content;
+            }
         }
     }
 

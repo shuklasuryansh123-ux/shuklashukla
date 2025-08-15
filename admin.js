@@ -265,12 +265,16 @@ class AdminPanel {
             const insights = await fetch('/api/ai/insights').then(res => res.json());
             console.log('AI Insights loaded:', insights);
             this.updateAIMetrics(insights);
-            this.loadAISuggestions();
-            this.loadAIDecisions();
-            this.loadUserPatterns();
             console.log('AI Dashboard loaded successfully!');
         } catch (error) {
             console.error('Error loading AI dashboard:', error);
+            // Fallback to empty metrics so the UI still updates
+            this.updateAIMetrics({});
+        } finally {
+            // Load other panels regardless of insights success
+            this.loadAISuggestions();
+            this.loadAIDecisions();
+            this.loadUserPatterns();
         }
     }
 

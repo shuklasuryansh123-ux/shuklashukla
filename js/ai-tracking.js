@@ -380,14 +380,22 @@ class AITracking {
 }
 
 // Initialize AI tracking after load to avoid competing with main thread
-document.addEventListener('load', () => {
-    window.aiTracking = new AITracking();
+window.addEventListener('load', () => {
+	try {
+		window.aiTracking = new AITracking();
+	} catch (e) {
+		console.log('AI tracking init error:', e);
+	}
 });
 // Fallback if 'load' missed (e.g., cached), init on DOMContentLoaded with a delay
 document.addEventListener('DOMContentLoaded', () => {
     if (!window.aiTracking) {
         setTimeout(() => {
-            window.aiTracking = new AITracking();
+            try {
+                window.aiTracking = new AITracking();
+            } catch (e) {
+                console.log('AI tracking fallback init error:', e);
+            }
         }, 0);
     }
 });
