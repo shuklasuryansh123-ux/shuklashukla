@@ -291,15 +291,7 @@ class ModernLawWebsite {
                 scrollContent.appendChild(clone);
             });
 
-            // GSAP animation for smooth scrolling
-            if (typeof gsap !== 'undefined') {
-                gsap.to(scrollContent, {
-                    x: '-50%',
-                    duration: 60,
-                    ease: 'none',
-                    repeat: -1
-                });
-            }
+            // Marquee animation handled via CSS; no JS tween to avoid conflicts
         }
     }
 
