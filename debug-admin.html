@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .debug-section { margin: 20px 0; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 4px; border-left: 4px solid #007bff; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .success { border-left-color: #28a745; background: #d4edda; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Admin Panel Debug</h1>
+    
+    <div class="debug-section">
+        <h3>1. Test Admin Panel Loading</h3>
+        <button onclick="testAdminPanel()">Test Admin Panel</button>
+        <div id="adminPanelResult" class="result"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>2. Test Global Functions</h3>
+        <button onclick="testGlobalFunctions()">Test Global Functions</button>
+        <div id="globalFunctionsResult" class="result"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>3. Test AI APIs</h3>
+        <button onclick="testAIAPIs()">Test AI APIs</button>
+        <div id="aiAPIsResult" class="result"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>4. Quick Navigation</h3>
+        <button onclick="window.open('/admin.html', '_blank')">Open Admin Panel</button>
+        <button onclick="window.open('/', '_blank')">Open Main Website</button>
+    </div>
+
+    <script>
+        function testAdminPanel() {
+            const resultDiv = document.getElementById('adminPanelResult');
+            resultDiv.innerHTML = '<strong>Testing...</strong>';
+            
+            try {
+                // Check if adminPanel exists
+                if (typeof adminPanel !== 'undefined') {
+                    resultDiv.innerHTML = '<strong class="success">✅ AdminPanel object exists</strong><br>Type: ' + typeof adminPanel;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.innerHTML = '<strong class="error">❌ AdminPanel object not found</strong><br>Available globals: ' + Object.keys(window).filter(k => k.includes('admin')).join(', ');
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<strong class="error">❌ Error: ' + error.message + '</strong>';
+                resultDiv.className = 'result error';
+            }
+        }
+
+        function testGlobalFunctions() {
+            const resultDiv = document.getElementById('globalFunctionsResult');
+            resultDiv.innerHTML = '<strong>Testing global functions...</strong>';
+            
+            const functions = [
+                'showForgotPassword', 'saveAllChanges', 'logout', 'saveHero', 
+                'saveAbout', 'detectBugs', 'analyzeSEO', 'generateBlogs'
+            ];
+            
+            let results = [];
+            functions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    results.push(`✅ ${func}: Available`);
+                } else {
+                    results.push(`❌ ${func}: Missing`);
+                }
+            });
+            
+            resultDiv.innerHTML = '<strong>Global Functions Test:</strong><br>' + results.join('<br>');
+            resultDiv.className = 'result success';
+        }
+
+        async function testAIAPIs() {
+            const resultDiv = document.getElementById('aiAPIsResult');
+            resultDiv.innerHTML = '<strong>Testing AI APIs...</strong>';
+            
+            const apis = [
+                { name: 'AI Insights', url: '/api/ai/insights' },
+                { name: 'Bug Detection', url: '/api/ai/detect-bugs' },
+                { name: 'SEO Analysis', url: '/api/ai/seo-analysis' },
+                { name: 'Blog Generation', url: '/api/ai/generate-blogs', method: 'POST' }
+            ];
+            
+            let results = [];
+            
+            for (const api of apis) {
+                try {
+                    const options = {
+                        method: api.method || 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    };
+                    
+                    if (api.method === 'POST') {
+                        options.body = JSON.stringify({});
+                    }
+                    
+                    const response = await fetch(api.url, options);
+                    const data = await response.json();
+                    
+                    results.push(`✅ ${api.name}: Working`);
+                } catch (error) {
+                    results.push(`❌ ${api.name}: ${error.message}`);
+                }
+            }
+            
+            resultDiv.innerHTML = '<strong>AI APIs Test:</strong><br>' + results.join('<br>');
+            resultDiv.className = 'result success';
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            setTimeout(testAdminPanel, 1000);
+            setTimeout(testGlobalFunctions, 1500);
+            setTimeout(testAIAPIs, 2000);
+        });
+    </script>
+</body>
+</html>

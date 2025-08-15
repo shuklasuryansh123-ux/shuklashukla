@@ -7,6 +7,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const fs = require('fs').promises;
+const https = require('https');
+const http = require('http');
 
 // Import services
 let GitHubService, PasswordResetService, AIIntelligenceService;
@@ -37,10 +39,11 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net"],
             fontSrc: ["'self'", "https://fonts.gstatic.com"],
-            scriptSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com"],
             imgSrc: ["'self'", "data:", "https:"],
+            connectSrc: ["'self'"],
         },
     },
 }));
@@ -78,11 +81,11 @@ app.get('/blog.html', (req, res) => {
 app.get('/gallery.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'gallery.html'));
 });
+
 app.get('/practice-areas.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'practice-areas.html'));
 });
 
-// Admin panel route
 app.get('/admin.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
@@ -99,25 +102,37 @@ app.get('/admin-test.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin-test.html'));
 });
 
+app.get('/debug-admin.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'debug-admin.html'));
+});
+
 // Contact form endpoint
-app.post('/api/contact', (req, res) => {
-    const { name, email, phone, message } = req.body;
-    
-    // Simple validation
-    if (!name || !email || !message) {
-        return res.status(400).json({
-            success: false,
-            message: 'Please fill in all required fields.'
+app.post('/api/contact', async (req, res) => {
+    try {
+        const { name, email, message } = req.body;
+        
+        // Validate input
+        if (!name || !email || !message) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'All fields are required' 
+            });
+        }
+        
+        // Here you would typically send an email or save to database
+        console.log('Contact form submission:', { name, email, message });
+        
+        res.json({ 
+            success: true, 
+            message: 'Thank you for your message! We will get back to you soon.' 
+        });
+    } catch (error) {
+        console.error('Contact form error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'An error occurred. Please try again.' 
         });
     }
-    
-    // Here you would typically save to database or send email
-    console.log('Contact form submission:', { name, email, phone, message });
-    
-    res.json({
-        success: true,
-        message: 'Thank you for your message! We will get back to you soon.'
-    });
 });
 
 // Health check endpoint
@@ -133,291 +148,203 @@ app.get('/health', (req, res) => {
 // API Routes for Content Management
 app.get('/api/content/:section', async (req, res) => {
     try {
-        const section = req.params.section;
+        const { section } = req.params;
         const filePath = path.join(__dirname, 'content', `${section}.json`);
         
-        const content = await fs.readFile(filePath, 'utf-8');
+        const content = await fs.readFile(filePath, 'utf8');
         res.json(JSON.parse(content));
     } catch (error) {
-        console.error(`Error reading content for ${req.params.section}:`, error);
+        console.error('Error reading content:', error);
         res.status(404).json({ error: 'Content not found' });
     }
 });
 
 app.post('/api/content/:section', async (req, res) => {
     try {
-        const section = req.params.section;
-        const content = req.body;
-        
-        // Add timestamp
-        content.lastUpdated = new Date().toISOString();
-        
+        const { section } = req.params;
         const filePath = path.join(__dirname, 'content', `${section}.json`);
-        await fs.writeFile(filePath, JSON.stringify(content, null, 2));
         
-        res.json({ success: true, message: 'Content updated successfully' });
+        await fs.writeFile(filePath, JSON.stringify(req.body, null, 2));
+        res.json({ success: true });
     } catch (error) {
-        console.error(`Error updating content for ${req.params.section}:`, error);
-        res.status(500).json({ error: 'Failed to update content' });
+        console.error('Error writing content:', error);
+        res.status(500).json({ error: 'Failed to save content' });
     }
 });
 
 // Password Reset API
 app.post('/api/forgot-password', async (req, res) => {
     try {
+        if (!PasswordResetService) {
+            return res.status(500).json({ error: 'Password reset service not available' });
+        }
+        
         const { email } = req.body;
+        const passwordService = new PasswordResetService();
+        await passwordService.sendPasswordResetEmail(email);
         
-        if (!email) {
-            return res.status(400).json({ success: false, message: 'Email is required' });
-        }
-        
-        if (PasswordResetService) {
-            const result = await PasswordResetService.sendPasswordResetEmail(email);
-            res.json(result);
-        } else {
-            res.json({ success: true, message: 'Password reset email would be sent (service not configured)' });
-        }
+        res.json({ success: true, message: 'Password reset email sent' });
     } catch (error) {
-        console.error('Error in forgot password:', error);
-        res.status(500).json({ success: false, message: 'Failed to send reset email' });
+        console.error('Password reset error:', error);
+        res.status(500).json({ error: 'Failed to send password reset email' });
     }
 });
 
 app.post('/api/reset-password', async (req, res) => {
     try {
+        if (!PasswordResetService) {
+            return res.status(500).json({ error: 'Password reset service not available' });
+        }
+        
         const { token, newPassword } = req.body;
+        const passwordService = new PasswordResetService();
+        await passwordService.resetPassword(token, newPassword);
         
-        if (!token || !newPassword) {
-            return res.status(400).json({ success: false, message: 'Token and new password are required' });
-        }
-        
-        if (PasswordResetService) {
-            const result = await PasswordResetService.resetPassword(token, newPassword);
-            res.json(result);
-        } else {
-            res.json({ success: true, message: 'Password would be reset (service not configured)' });
-        }
+        res.json({ success: true, message: 'Password reset successfully' });
     } catch (error) {
-        console.error('Error in password reset:', error);
-        res.status(500).json({ success: false, message: 'Failed to reset password' });
+        console.error('Password reset error:', error);
+        res.status(500).json({ error: 'Failed to reset password' });
     }
 });
 
 // GitHub Integration API
 app.post('/api/deploy', async (req, res) => {
     try {
-        const { commitMessage = 'Update content via admin panel' } = req.body;
-        
         if (!GitHubService) {
-            return res.status(500).json({ success: false, message: 'GitHub service not configured' });
+            return res.status(500).json({ error: 'GitHub service not available' });
         }
         
-        // Get all content files
-        const contentDir = path.join(__dirname, 'content');
-        const files = await fs.readdir(contentDir);
+        const githubService = new GitHubService();
+        await githubService.init();
+        await githubService.triggerDeployment();
         
-        const filesToUpdate = [];
-        for (const file of files) {
-            if (file.endsWith('.json')) {
-                const content = await fs.readFile(path.join(contentDir, file), 'utf-8');
-                filesToUpdate.push({
-                    path: `content/${file}`,
-                    content: content
-                });
-            }
-        }
-        
-        // Update files on GitHub
-        const result = await GitHubService.updateMultipleFiles(filesToUpdate, commitMessage);
-        
-        // Trigger deployment
-        await GitHubService.triggerDeployment();
-        
-        res.json({ 
-            success: true, 
-            message: 'Content deployed successfully',
-            commit: result
-        });
+        res.json({ success: true, message: 'Deployment triggered' });
     } catch (error) {
-        console.error('Error deploying content:', error);
-        res.status(500).json({ success: false, message: 'Failed to deploy content' });
+        console.error('Deployment error:', error);
+        res.status(500).json({ error: 'Failed to trigger deployment' });
     }
 });
 
 app.get('/api/deployment-status', async (req, res) => {
     try {
         if (!GitHubService) {
-            return res.status(500).json({ success: false, message: 'GitHub service not configured' });
+            return res.status(500).json({ error: 'GitHub service not available' });
         }
         
-        const status = await GitHubService.getDeploymentStatus();
-        res.json({ success: true, status });
+        const githubService = new GitHubService();
+        await githubService.init();
+        const status = await githubService.getDeploymentStatus();
+        
+        res.json(status);
     } catch (error) {
-        console.error('Error getting deployment status:', error);
-        res.status(500).json({ success: false, message: 'Failed to get deployment status' });
+        console.error('Deployment status error:', error);
+        res.status(500).json({ error: 'Failed to get deployment status' });
     }
 });
 
 // Save All Changes API
 app.post('/api/save-all', async (req, res) => {
     try {
-        const { content } = req.body;
+        const { websiteData } = req.body;
         
-        // Update all content files
-        for (const [section, data] of Object.entries(content)) {
-            const filePath = path.join(__dirname, 'content', `${section}.json`);
-            data.lastUpdated = new Date().toISOString();
+        // Save to content files
+        const contentDir = path.join(__dirname, 'content');
+        await fs.mkdir(contentDir, { recursive: true });
+        
+        for (const [section, data] of Object.entries(websiteData)) {
+            const filePath = path.join(contentDir, `${section}.json`);
             await fs.writeFile(filePath, JSON.stringify(data, null, 2));
         }
         
-        // Deploy to GitHub if configured
-        if (GitHubService && process.env.GITHUB_TOKEN) {
-            await GitHubService.updateMultipleFiles(
-                Object.entries(content).map(([section, data]) => ({
-                    path: `content/${section}.json`,
-                    content: JSON.stringify(data, null, 2)
-                })),
-                'Update all content via admin panel'
-            );
-            
-            await GitHubService.triggerDeployment();
-        }
-        
-        res.json({ success: true, message: 'All changes saved and deployed successfully' });
+        res.json({ success: true, message: 'All changes saved' });
     } catch (error) {
-        console.error('Error saving all changes:', error);
-        res.status(500).json({ success: false, message: 'Failed to save changes' });
+        console.error('Save all error:', error);
+        res.status(500).json({ error: 'Failed to save changes' });
     }
 });
 
-// AI Intelligence API Routes (NEW)
+// AI Intelligence API Routes
 app.post('/api/ai/track', async (req, res) => {
     try {
-        const { userId, action, data } = req.body;
-        
-        if (aiService) {
-            aiService.trackUserBehavior(userId, action, data);
-            res.json({ success: true, message: 'Tracking data received' });
-        } else {
-            res.json({ success: false, message: 'AI service not available' });
+        if (!aiService) {
+            return res.status(500).json({ error: 'AI service not available' });
         }
+        
+        const { userId, action, data } = req.body;
+        aiService.trackUserBehavior(userId, action, data);
+        
+        res.json({ success: true });
     } catch (error) {
         console.error('AI tracking error:', error);
-        res.status(500).json({ error: 'Failed to track data' });
+        res.status(500).json({ error: 'Failed to track user behavior' });
     }
 });
 
 app.get('/api/ai/insights', async (req, res) => {
     try {
-        if (aiService) {
-            const insights = aiService.getAIInsights();
-            res.json(insights);
-        } else {
-            res.json({ error: 'AI service not available' });
+        if (!aiService) {
+            return res.status(500).json({ error: 'AI service not available' });
         }
+        
+        const insights = await aiService.getAIInsights();
+        res.json(insights);
     } catch (error) {
         console.error('AI insights error:', error);
-        res.status(500).json({ error: 'Failed to get insights' });
+        res.status(500).json({ error: 'Failed to get AI insights' });
     }
 });
 
 app.post('/api/ai/recommendations', async (req, res) => {
     try {
-        const { userId, currentSection, deviceType } = req.body;
-        
-        if (aiService) {
-            // Generate personalized recommendations based on user behavior
-            const recommendations = aiService.generateRecommendations();
-            
-            // Add personalized recommendations based on user patterns
-            const userPatterns = aiService.learningData.patterns[userId];
-            let personalizedRecommendations = recommendations;
-            
-            if (userPatterns) {
-                const userRecommendations = [];
-                
-                // Recommend content based on user preferences
-                if (userPatterns.preferredContentTypes?.length > 0) {
-                    const topContent = userPatterns.preferredContentTypes[0];
-                    userRecommendations.push({
-                        type: 'content_recommendation',
-                        title: `More ${topContent.type} Content`,
-                        description: `Based on your interests, you might like our ${topContent.type} content.`,
-                        priority: 'high',
-                        action: `view_${topContent.type}_content`
-                    });
-                }
-                
-                // Recommend sections based on visit patterns
-                if (userPatterns.mostVisitedSections?.length > 0) {
-                    const topSection = userPatterns.mostVisitedSections[0];
-                    userRecommendations.push({
-                        type: 'section_recommendation',
-                        title: `Explore ${topSection.section}`,
-                        description: `You frequently visit this section. Check out our latest updates.`,
-                        priority: 'medium',
-                        action: `visit_${topSection.section}`
-                    });
-                }
-                
-                personalizedRecommendations = [...userRecommendations, ...recommendations];
-            }
-            
-            res.json({
-                recommendations: personalizedRecommendations,
-                userPatterns: userPatterns || null,
-                currentSection,
-                deviceType
-            });
-        } else {
-            res.json({ error: 'AI service not available' });
+        if (!aiService) {
+            return res.status(500).json({ error: 'AI service not available' });
         }
+        
+        const recommendations = aiService.generateRecommendations();
+        res.json(recommendations);
     } catch (error) {
         console.error('AI recommendations error:', error);
-        res.status(500).json({ error: 'Failed to get recommendations' });
+        res.status(500).json({ error: 'Failed to generate recommendations' });
     }
 });
 
 app.post('/api/ai/decisions', async (req, res) => {
     try {
-        if (aiService) {
-            const decisions = aiService.makeAutonomousDecisions();
-            res.json({ decisions });
-        } else {
-            res.json({ error: 'AI service not available' });
+        if (!aiService) {
+            return res.status(500).json({ error: 'AI service not available' });
         }
+        
+        const decisions = aiService.makeAutonomousDecisions();
+        res.json(decisions);
     } catch (error) {
         console.error('AI decisions error:', error);
-        res.status(500).json({ error: 'Failed to make decisions' });
+        res.status(500).json({ error: 'Failed to make AI decisions' });
     }
 });
 
-// GitHub Copilot Integration API
 app.post('/api/ai/copilot-review', async (req, res) => {
     try {
-        const { filePath } = req.body;
-        
-        if (aiService) {
-            const suggestions = await aiService.copilotCodeReview(filePath);
-            res.json({ suggestions });
-        } else {
-            res.json({ error: 'AI service not available' });
+        if (!aiService) {
+            return res.status(500).json({ error: 'AI service not available' });
         }
+        
+        const { filePath } = req.body;
+        const review = await aiService.copilotCodeReview(filePath);
+        res.json(review);
     } catch (error) {
         console.error('Copilot review error:', error);
         res.status(500).json({ error: 'Failed to review code' });
     }
 });
 
-// Bug Detection and Fixing API
 app.get('/api/ai/detect-bugs', async (req, res) => {
     try {
-        if (aiService) {
-            const bugs = await aiService.detectBugs();
-            res.json({ bugs });
-        } else {
-            res.json({ error: 'AI service not available' });
+        if (!aiService) {
+            return res.status(500).json({ error: 'AI service not available' });
         }
+        
+        const bugs = await aiService.detectBugs();
+        res.json(bugs);
     } catch (error) {
         console.error('Bug detection error:', error);
         res.status(500).json({ error: 'Failed to detect bugs' });
@@ -426,109 +353,99 @@ app.get('/api/ai/detect-bugs', async (req, res) => {
 
 app.post('/api/ai/fix-bug', async (req, res) => {
     try {
-        const { bug } = req.body;
-        
-        if (aiService) {
-            const result = await aiService.fixBug(bug);
-            res.json(result);
-        } else {
-            res.json({ error: 'AI service not available' });
+        if (!aiService) {
+            return res.status(500).json({ error: 'AI service not available' });
         }
+        
+        const { bug } = req.body;
+        const result = await aiService.fixBug(bug);
+        res.json(result);
     } catch (error) {
-        console.error('Bug fixing error:', error);
+        console.error('Bug fix error:', error);
         res.status(500).json({ error: 'Failed to fix bug' });
     }
 });
 
-// SEO Analysis API
 app.get('/api/ai/seo-analysis', async (req, res) => {
     try {
-        if (aiService) {
-            const seoAnalysis = await aiService.analyzeSEO();
-            res.json(seoAnalysis);
-        } else {
-            res.json({ error: 'AI service not available' });
+        if (!aiService) {
+            return res.status(500).json({ error: 'AI service not available' });
         }
+        
+        const analysis = await aiService.analyzeSEO();
+        res.json(analysis);
     } catch (error) {
         console.error('SEO analysis error:', error);
         res.status(500).json({ error: 'Failed to analyze SEO' });
     }
 });
 
-// AI Blog Generation API
 app.post('/api/ai/generate-blogs', async (req, res) => {
     try {
-        if (aiService) {
-            const blogPosts = await aiService.generateBlogPosts();
-            res.json({ blogPosts });
-        } else {
-            res.json({ error: 'AI service not available' });
+        if (!aiService) {
+            return res.status(500).json({ error: 'AI service not available' });
         }
+        
+        const blogs = await aiService.generateBlogPosts();
+        res.json(blogs);
     } catch (error) {
         console.error('Blog generation error:', error);
         res.status(500).json({ error: 'Failed to generate blogs' });
     }
 });
 
-// Traffic Optimization for India API
 app.get('/api/ai/traffic-optimization', async (req, res) => {
     try {
-        if (aiService) {
-            const optimization = await aiService.optimizeForIndianTraffic();
-            res.json(optimization);
-        } else {
-            res.json({ error: 'AI service not available' });
+        if (!aiService) {
+            return res.status(500).json({ error: 'AI service not available' });
         }
+        
+        const optimization = await aiService.optimizeForIndianTraffic();
+        res.json(optimization);
     } catch (error) {
         console.error('Traffic optimization error:', error);
         res.status(500).json({ error: 'Failed to optimize traffic' });
     }
 });
 
-// ChatGPT Integration API
 app.post('/api/ai/chat', async (req, res) => {
     try {
-        const { message, context } = req.body;
-        
-        if (aiService) {
-            const response = await aiService.chatWithGPT(message, context);
-            res.json({ response });
-        } else {
-            res.json({ error: 'AI service not available' });
+        if (!aiService) {
+            return res.status(500).json({ error: 'AI service not available' });
         }
+        
+        const { message, context } = req.body;
+        const response = await aiService.chatWithGPT(message, context);
+        res.json({ response });
     } catch (error) {
-        console.error('ChatGPT error:', error);
-        res.status(500).json({ error: 'Failed to process chat' });
+        console.error('Chat error:', error);
+        res.status(500).json({ error: 'Failed to process chat message' });
     }
 });
 
-// Auto-optimization for Traffic API
 app.post('/api/ai/auto-optimize-traffic', async (req, res) => {
     try {
-        if (aiService) {
-            const optimizations = await aiService.autoOptimizeForTraffic();
-            res.json({ optimizations });
-        } else {
-            res.json({ error: 'AI service not available' });
+        if (!aiService) {
+            return res.status(500).json({ error: 'AI service not available' });
         }
+        
+        const result = await aiService.autoOptimizeForTraffic();
+        res.json(result);
     } catch (error) {
-        console.error('Auto-optimization error:', error);
-        res.status(500).json({ error: 'Failed to auto-optimize' });
+        console.error('Auto-optimize error:', error);
+        res.status(500).json({ error: 'Failed to auto-optimize traffic' });
     }
 });
 
 // 404 handler
 app.use((req, res) => {
-    res.status(404).send('Page not found');
+    res.status(404).json({ error: 'Page not found' });
 });
 
-// Global error handler
-app.use((err, req, res, next) => {
-    console.error('Server error:', err);
-    res.status(500).json({
-        error: 'Internal server error',
-        message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
-    });
+// Error handler
+app.use((error, req, res, next) => {
+    console.error('Server error:', error);
+    res.status(500).json({ error: 'Internal server error' });
 });
 
 // Start server
@@ -538,6 +455,6 @@ app.listen(PORT, () => {
     console.log(`🔗 Main site: http://localhost:${PORT}`);
     console.log(`🧪 Test page: http://localhost:${PORT}/test`);
     console.log(`📝 Notepad: http://localhost:${PORT}/more.html`);
+    console.log(`⚙️ Admin panel: http://localhost:${PORT}/admin.html`);
+    console.log(`🔧 Debug admin: http://localhost:${PORT}/debug-admin.html`);
 });
-
-module.exports = app;
