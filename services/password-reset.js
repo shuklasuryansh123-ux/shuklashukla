@@ -1,6 +1,8 @@
 // Password Reset Service
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const fs = require('fs').promises;
+const path = require('path');
 
 class PasswordResetService {
     constructor() {
@@ -17,7 +19,30 @@ class PasswordResetService {
             }
         };
         
-        this.transporter = nodemailer.createTransporter(this.emailConfig);
+        // Persistent credentials storage
+        this.credentialsFilePath = path.join(__dirname, '..', 'data', 'admin-credentials.json');
+
+        // Initialize transporter
+        this.transporter = nodemailer.createTransport(this.emailConfig);
+    }
+
+    async ensureDataDir() {
+        await fs.mkdir(path.dirname(this.credentialsFilePath), { recursive: true });
+    }
+
+    async readCredentialsFromFile() {
+        try {
+            const content = await fs.readFile(this.credentialsFilePath, 'utf8');
+            const parsed = JSON.parse(content);
+            return parsed || null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    async writeCredentialsToFile(credentials) {
+        await this.ensureDataDir();
+        await fs.writeFile(this.credentialsFilePath, JSON.stringify(credentials, null, 2));
     }
 
     // Generate reset token
@@ -142,7 +167,6 @@ class PasswordResetService {
             }
 
             // Here you would typically update the password in your database
-            // For now, we'll update the localStorage
             const adminCredentials = {
                 email: validation.email,
                 password: newPassword,
@@ -150,7 +174,7 @@ class PasswordResetService {
             };
 
             // Store new credentials (in production, this should be in a secure database)
-            localStorage.setItem('adminCredentials', JSON.stringify(adminCredentials));
+            await this.writeCredentialsToFile(adminCredentials);
 
             // Mark token as used
             this.markTokenAsUsed(token);
@@ -176,10 +200,10 @@ class PasswordResetService {
     }
 
     // Get admin credentials
-    getAdminCredentials() {
+    async getAdminCredentials() {
         try {
-            const credentials = localStorage.getItem('adminCredentials');
-            return credentials ? JSON.parse(credentials) : null;
+            const credentials = await this.readCredentialsFromFile();
+            return credentials ? credentials : null;
         } catch (error) {
             console.error('Error getting admin credentials:', error);
             return null;
@@ -187,8 +211,8 @@ class PasswordResetService {
     }
 
     // Verify admin credentials
-    verifyCredentials(email, password) {
-        const credentials = this.getAdminCredentials();
+    async verifyCredentials(email, password) {
+        const credentials = await this.getAdminCredentials();
         
         if (credentials && credentials.email === email && credentials.password === password) {
             return true;
@@ -199,14 +223,14 @@ class PasswordResetService {
     }
 
     // Update admin credentials
-    updateCredentials(email, newPassword) {
+    async updateCredentials(email, newPassword) {
         const credentials = {
             email: email,
             password: newPassword,
             lastUpdated: new Date().toISOString()
         };
 
-        localStorage.setItem('adminCredentials', JSON.stringify(credentials));
+        await this.writeCredentialsToFile(credentials);
         return true;
     }
 }

@@ -156,10 +156,27 @@ app.get('/health', (req, res) => {
     });
 });
 
+// Helper: Commit files to GitHub
+async function commitFilesToGitHub(files, message = 'Update content via API') {
+    try {
+        if (!GitHubService) return false;
+        const githubService = new GitHubService();
+        await githubService.init();
+        await githubService.updateMultipleFiles(files, message);
+        return true;
+    } catch (error) {
+        console.log('GitHub commit skipped/failed:', error.message || error);
+        return false;
+    }
+}
+
 // API Routes for Content Management
 app.get('/api/content/:section', async (req, res) => {
     try {
         const { section } = req.params;
+        if (!/^[a-zA-Z0-9_-]+$/.test(section)) {
+            return res.status(400).json({ error: 'Invalid section name' });
+        }
         const filePath = path.join(__dirname, 'content', `${section}.json`);
         
         const content = await fs.readFile(filePath, 'utf8');
@@ -173,9 +190,16 @@ app.get('/api/content/:section', async (req, res) => {
 app.post('/api/content/:section', async (req, res) => {
     try {
         const { section } = req.params;
+        if (!/^[a-zA-Z0-9_-]+$/.test(section)) {
+            return res.status(400).json({ error: 'Invalid section name' });
+        }
         const filePath = path.join(__dirname, 'content', `${section}.json`);
         
-        await fs.writeFile(filePath, JSON.stringify(req.body, null, 2));
+        const serialized = JSON.stringify(req.body, null, 2);
+        await fs.writeFile(filePath, serialized);
+        await commitFilesToGitHub([
+            { path: `content/${section}.json`, content: serialized }
+        ], `Update content: ${section}.json`);
         res.json({ success: true });
     } catch (error) {
         console.error('Error writing content:', error);
@@ -191,6 +215,7 @@ app.post('/api/forgot-password', async (req, res) => {
         }
         
         const { email } = req.body;
+        if (!email) return res.status(400).json({ error: 'Email is required' });
         const passwordService = new PasswordResetService();
         await passwordService.sendPasswordResetEmail(email);
         
@@ -257,20 +282,60 @@ app.get('/api/deployment-status', async (req, res) => {
 app.post('/api/save-all', async (req, res) => {
     try {
         const { websiteData } = req.body;
+        if (!websiteData || typeof websiteData !== 'object') {
+            return res.status(400).json({ error: 'Invalid website data' });
+        }
         
         // Save to content files
         const contentDir = path.join(__dirname, 'content');
         await fs.mkdir(contentDir, { recursive: true });
         
+        const filesForGit = [];
         for (const [section, data] of Object.entries(websiteData)) {
+            if (!/^[a-zA-Z0-9_-]+$/.test(section)) {
+                return res.status(400).json({ error: `Invalid section name: ${section}` });
+            }
             const filePath = path.join(contentDir, `${section}.json`);
-            await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+            const serialized = JSON.stringify(data, null, 2);
+            await fs.writeFile(filePath, serialized);
+            filesForGit.push({ path: `content/${section}.json`, content: serialized });
+        }
+        
+        if (filesForGit.length) {
+            await commitFilesToGitHub(filesForGit, 'Save all content changes');
         }
         
         res.json({ success: true, message: 'All changes saved' });
     } catch (error) {
         console.error('Save all error:', error);
         res.status(500).json({ error: 'Failed to save changes' });
+    }
+});
+
+// Upload API - accepts base64 file and saves to uploads/
+app.post('/api/upload', async (req, res) => {
+    try {
+        const { path: relPath, base64, contentType } = req.body || {};
+        if (!relPath || !base64) {
+            return res.status(400).json({ error: 'path and base64 are required' });
+        }
+        if (relPath.includes('..') || relPath.startsWith('/') || !relPath.startsWith('uploads/')) {
+            return res.status(400).json({ error: 'Invalid upload path' });
+        }
+        const allowed = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'];
+        const ext = relPath.substring(relPath.lastIndexOf('.')).toLowerCase();
+        if (!allowed.includes(ext)) {
+            return res.status(400).json({ error: 'Unsupported file type' });
+        }
+        const uploadAbs = path.join(__dirname, relPath);
+        await fs.mkdir(path.dirname(uploadAbs), { recursive: true });
+        const buffer = Buffer.from(base64.replace(/^data:[^;]+;base64,/, ''), 'base64');
+        await fs.writeFile(uploadAbs, buffer);
+        await commitFilesToGitHub([{ path: relPath, content: buffer.toString('base64'), encoding: 'base64' }], `Upload file: ${relPath}`);
+        res.json({ success: true, url: `/${relPath}`, contentType: contentType || null });
+    } catch (error) {
+        console.error('Upload error:', error);
+        res.status(500).json({ error: 'Failed to upload file' });
     }
 });
 
@@ -445,6 +510,25 @@ app.post('/api/ai/auto-optimize-traffic', async (req, res) => {
     } catch (error) {
         console.error('Auto-optimize error:', error);
         res.status(500).json({ error: 'Failed to auto-optimize traffic' });
+    }
+});
+
+app.post('/api/admin/login', async (req, res) => {
+    try {
+        if (!PasswordResetService) {
+            return res.status(500).json({ error: 'Auth service not available' });
+        }
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+        const passwordService = new PasswordResetService();
+        const ok = await passwordService.verifyCredentials(email, password);
+        if (ok) return res.json({ success: true });
+        return res.status(401).json({ error: 'Invalid credentials' });
+    } catch (error) {
+        console.error('Admin login error:', error);
+        res.status(500).json({ error: 'Failed to login' });
     }
 });
 

@@ -3,6 +3,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const https = require('https');
 const http = require('http');
+const GitHubService = require('./github-service');
 
 class AIIntelligenceService {
     constructor() {
@@ -34,6 +35,11 @@ class AIIntelligenceService {
         await this.loadLearningData();
         await this.analyzeCurrentPerformance();
         this.startContinuousLearning();
+        
+        // Run initial maintenance tasks and start schedulers
+        await this.ensureDailyBlogPublishing();
+        await this.updateSEOAssets();
+        this.startBackgroundSchedulers();
     }
 
     // Track user behavior and interactions
@@ -706,14 +712,21 @@ class AIIntelligenceService {
     }
 
     fixErrorHandling(code) {
-        // Add error handling to fetch requests
-        return code.replace(
-            /fetch\([^)]*\)\.then\(/g,
-            'fetch($1).then('
-        ).replace(
-            /\.then\([^)]*\)/g,
-            '.then($1).catch(error => console.error("Error:", error))'
-        );
+        // Safely add catch blocks to single-line fetch chains that lack catch
+        const lines = code.split('\n');
+        const updated = lines.map(originalLine => {
+            const line = originalLine;
+            if (line.includes('fetch(') && line.includes('.then(') && !line.includes('.catch(')) {
+                // Append a generic catch handler at the end of the promise chain on this line
+                if (line.trim().endsWith(';')) {
+                    return line.replace(/;\s*$/, 
+                        ".catch(error => console.error(\"Error in fetch chain:\", error));");
+                }
+                return line + ".catch(error => console.error(\"Error in fetch chain:\", error))";
+            }
+            return originalLine;
+        });
+        return updated.join('\n');
     }
 
     fixUndefinedVariables(code) {
@@ -1056,6 +1069,207 @@ The evolving legal landscape requires continuous learning and adaptation. Our te
         }
         
         return optimizations;
+    }
+
+    // Background schedulers for blogs, SEO assets, and bug fixing
+    startBackgroundSchedulers() {
+        // Ensure two blog posts per day; check hourly
+        setInterval(async () => {
+            try {
+                await this.ensureDailyBlogPublishing();
+            } catch (error) {
+                console.error('Blog scheduler error:', error);
+            }
+        }, 60 * 60 * 1000);
+
+        // Update SEO assets (sitemap, RSS) every 12 hours
+        setInterval(async () => {
+            try {
+                await this.updateSEOAssets();
+            } catch (error) {
+                console.error('SEO assets scheduler error:', error);
+            }
+        }, 12 * 60 * 60 * 1000);
+
+        // Detect and attempt simple bug fixes every 6 hours
+        setInterval(async () => {
+            try {
+                const bugs = await this.detectBugs();
+                for (const bug of bugs) {
+                    if (bug.type === 'potential_undefined' || bug.type === 'potential_memory_leak') {
+                        await this.fixBug(bug);
+                    }
+                }
+            } catch (error) {
+                console.error('Bug fix scheduler error:', error);
+            }
+        }, 6 * 60 * 60 * 1000);
+    }
+
+    async ensureDailyBlogPublishing() {
+        const state = await this.loadAIState();
+        const today = new Date().toISOString().slice(0, 10);
+        if (state.lastBlogPublishDate !== today || (state.blogsPublishedToday || 0) < 2) {
+            const toPublish = 2 - (state.blogsPublishedToday || 0);
+            const posts = [];
+            for (let i = 0; i < toPublish; i++) {
+                const topic = await this.fetchTrendingTopic(i).catch(() => this.pickDailyTopic(i));
+                const post = await this.generateBlogPost(topic);
+                const image = await this.generateBlogImage(topic);
+                posts.push({ ...post, image, date: new Date().toISOString().slice(0, 10), author: 'Legal Team' });
+            }
+            if (posts.length > 0) {
+                await this.publishBlogsToContent(posts);
+                await this.commitContentFiles([
+                    { path: 'content/blog.json', localPath: path.join(__dirname, '..', 'content', 'blog.json') }
+                ], 'AI: publish daily blog posts');
+                state.lastBlogPublishDate = today;
+                state.blogsPublishedToday = (state.blogsPublishedToday || 0) + posts.length;
+                await this.saveAIState(state);
+            }
+        }
+    }
+
+    pickDailyTopic(index) {
+        const baseTopics = [
+            `Latest Supreme Court Judgment - ${new Date().toLocaleDateString('en-IN')}`,
+            'Significant High Court Ruling This Week',
+            'Corporate Compliance Update',
+            'Criminal Law Amendment Explained',
+            'Property Law Case Study'
+        ];
+        return baseTopics[index % baseTopics.length];
+    }
+
+    async publishBlogsToContent(posts) {
+        const contentPath = path.join(__dirname, '..', 'content', 'blog.json');
+        await fs.mkdir(path.dirname(contentPath), { recursive: true });
+        let existing;
+        try {
+            existing = JSON.parse(await fs.readFile(contentPath, 'utf8'));
+        } catch (e) {
+            existing = { blogPosts: [], lastUpdated: new Date().toISOString() };
+        }
+        const nextId = (existing.blogPosts.reduce((max, p) => Math.max(max, p.id || 0), 0) || 0) + 1;
+        const newPosts = posts.map((p, idx) => ({
+            id: nextId + idx,
+            title: p.title,
+            excerpt: (p.content || '').split('\n').slice(0, 2).join(' ').slice(0, 180) + '...',
+            content: p.content,
+            category: (p.tags && p.tags[0]) ? p.tags[0].toLowerCase().replace(/\s+/g, '-') : 'legal',
+            image: p.image?.url ? p.image.url : '📚',
+            date: p.date || new Date().toISOString().slice(0, 10),
+            author: p.author || 'Legal Team',
+            tags: p.tags || [],
+            keywords: p.keywords || []
+        }));
+        existing.blogPosts = [...newPosts, ...existing.blogPosts].slice(0, 200);
+        existing.lastUpdated = new Date().toISOString();
+        await fs.writeFile(contentPath, JSON.stringify(existing, null, 2));
+    }
+
+    async loadAIState() {
+        try {
+            const p = path.join(__dirname, '..', 'data', 'ai-state.json');
+            await fs.mkdir(path.dirname(p), { recursive: true });
+            const raw = await fs.readFile(p, 'utf8');
+            return JSON.parse(raw);
+        } catch (e) {
+            return { lastBlogPublishDate: null, blogsPublishedToday: 0 };
+        }
+    }
+
+    async saveAIState(state) {
+        try {
+            const p = path.join(__dirname, '..', 'data', 'ai-state.json');
+            await fs.mkdir(path.dirname(p), { recursive: true });
+            await fs.writeFile(p, JSON.stringify(state, null, 2));
+        } catch (e) {
+            console.error('Failed to save AI state:', e);
+        }
+    }
+
+    async updateSEOAssets() {
+        try {
+            await this.generateSitemap();
+            await this.generateRSSFeed();
+            await this.commitContentFiles([
+                { path: 'sitemap.xml', localPath: path.join(__dirname, '..', 'sitemap.xml') },
+                { path: 'robots.txt', localPath: path.join(__dirname, '..', 'robots.txt') },
+                { path: 'rss.xml', localPath: path.join(__dirname, '..', 'rss.xml') }
+            ], 'AI: update SEO assets');
+        } catch (error) {
+            console.error('Error updating SEO assets:', error);
+        }
+    }
+
+    async generateSitemap() {
+        try {
+            const baseUrl = process.env.SITE_URL || 'http://localhost:3000';
+            const routes = ['/', '/blog.html', '/gallery.html', '/practice-areas.html', '/more.html', '/contact.html'];
+            const blogPath = path.join(__dirname, '..', 'content', 'blog.json');
+            let blogUrls = '';
+            try {
+                const blogData = JSON.parse(await fs.readFile(blogPath, 'utf8'));
+                blogUrls = (blogData.blogPosts || []).slice(0, 100).map(p => `  <url>\n    <loc>${baseUrl}/blog.html#post-${p.id}</loc>\n    <lastmod>${new Date(p.date).toISOString()}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>`).join('\n');
+            } catch {}
+            const staticUrls = routes.map(r => `  <url>\n    <loc>${baseUrl}${r}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`).join('\n');
+            const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${staticUrls}\n${blogUrls}\n</urlset>\n`;
+            await fs.writeFile(path.join(__dirname, '..', 'sitemap.xml'), xml);
+            await fs.writeFile(path.join(__dirname, '..', 'robots.txt'), `Sitemap: ${baseUrl}/sitemap.xml\nUser-agent: *\nAllow: /\n`);
+        } catch (error) {
+            console.error('Failed to generate sitemap:', error);
+        }
+    }
+
+    async generateRSSFeed() {
+        try {
+            const baseUrl = process.env.SITE_URL || 'http://localhost:3000';
+            const blogPath = path.join(__dirname, '..', 'content', 'blog.json');
+            let blogData = { blogPosts: [] };
+            try {
+                blogData = JSON.parse(await fs.readFile(blogPath, 'utf8'));
+            } catch {}
+            const items = (blogData.blogPosts || []).slice(0, 20).map(p => `  <item>\n    <title><![CDATA[${p.title}]]></title>\n    <link>${baseUrl}/blog.html#post-${p.id}</link>\n    <pubDate>${new Date(p.date).toUTCString()}</pubDate>\n    <description><![CDATA[${p.excerpt || ''}]]></description>\n    <guid isPermaLink="false">blog-${p.id}</guid>\n  </item>`).join('\n');
+            const rss = `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0">\n<channel>\n  <title>Shukla & Shukla - Legal Blog</title>\n  <link>${baseUrl}/blog.html</link>\n  <description>Latest legal insights and judgments</description>\n  <language>en-IN</language>\n${items}\n</channel>\n</rss>\n`;
+            await fs.writeFile(path.join(__dirname, '..', 'rss.xml'), rss);
+        } catch (error) {
+            console.error('Failed to generate RSS feed:', error);
+        }
+    }
+
+    async commitContentFiles(fileSpecs, message) {
+        try {
+            const gh = new GitHubService();
+            await gh.init();
+            const files = [];
+            for (const spec of fileSpecs) {
+                const content = await fs.readFile(spec.localPath);
+                const ext = spec.path.split('.').pop().toLowerCase();
+                const isText = ['json', 'md', 'txt', 'xml'].includes(ext);
+                files.push({
+                    path: spec.path,
+                    content: isText ? content.toString('utf-8') : content.toString('base64'),
+                    encoding: isText ? 'utf-8' : 'base64'
+                });
+            }
+            await gh.updateMultipleFiles(files, message);
+        } catch (e) {
+            console.log('GitHub commit skipped/failed (AI):', e.message || e);
+        }
+    }
+
+    async fetchTrendingTopic(offset) {
+        // Placeholder for external API. Can be wired to News API or legal data source.
+        // For now simulate a small rotation with Supreme Court in focus
+        const topics = [
+            'Latest Supreme Court Judgment - Key Takeaways',
+            'High Court Significant Ruling - Analysis',
+            'Corporate Compliance Update - New Circular',
+            'Criminal Law Amendment - What Changed',
+            'Property Law - Recent Landmark Case'
+        ];
+        return topics[offset % topics.length];
     }
 }
 

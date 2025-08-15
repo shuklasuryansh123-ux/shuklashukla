@@ -5,6 +5,19 @@ class GitHubService {
         this.token = process.env.GITHUB_TOKEN;
         this.repo = process.env.GITHUB_REPO || 'your-username/shukla-law-firm';
         this.branch = process.env.GITHUB_BRANCH || 'main';
+        this.fetchReady = this.ensureFetch();
+    }
+
+    async ensureFetch() {
+        if (typeof fetch === 'undefined') {
+            try {
+                const mod = await import('node-fetch');
+                global.fetch = mod.default;
+            } catch (error) {
+                console.error('Fetch API is not available and node-fetch could not be loaded. Ensure Node 18+ or install node-fetch.', error);
+                throw error;
+            }
+        }
     }
 
     // Initialize GitHub service
@@ -14,6 +27,7 @@ class GitHubService {
         }
         
         try {
+            await this.fetchReady;
             const response = await fetch(`${this.baseURL}/repos/${this.repo}`, {
                 headers: {
                     'Authorization': `token ${this.token}`,
@@ -36,6 +50,7 @@ class GitHubService {
     // Get current file content from GitHub
     async getFileContent(path) {
         try {
+            await this.fetchReady;
             const response = await fetch(`${this.baseURL}/repos/${this.repo}/contents/${path}?ref=${this.branch}`, {
                 headers: {
                     'Authorization': `token ${this.token}`,
@@ -65,6 +80,7 @@ class GitHubService {
     // Update file content on GitHub
     async updateFile(path, content, message = 'Update content via admin panel') {
         try {
+            await this.fetchReady;
             // Get current file to get SHA
             const currentFile = await this.getFileContent(path);
             const sha = currentFile ? currentFile.sha : null;
@@ -106,12 +122,15 @@ class GitHubService {
     // Create or update multiple files
     async updateMultipleFiles(files, commitMessage = 'Update multiple files via admin panel') {
         try {
-            const tree = [];
-            const baseTree = await this.getBaseTree();
+            await this.fetchReady;
+            const { commitSha: baseCommitSha, treeSha: baseTreeSha } = await this.getBaseCommitAndTree();
 
+            const tree = [];
             for (const file of files) {
-                const content = typeof file.content === 'string' ? file.content : JSON.stringify(file.content, null, 2);
-                const blob = await this.createBlob(content);
+                const isString = typeof file.content === 'string';
+                const content = isString ? file.content : JSON.stringify(file.content, null, 2);
+                const encoding = file.encoding === 'base64' ? 'base64' : 'utf-8';
+                const blob = await this.createBlob(content, encoding);
                 
                 tree.push({
                     path: file.path,
@@ -121,8 +140,8 @@ class GitHubService {
                 });
             }
 
-            const newTree = await this.createTree(tree, baseTree);
-            const commit = await this.createCommit(commitMessage, newTree.sha, baseTree);
+            const newTree = await this.createTree(tree, baseTreeSha);
+            const commit = await this.createCommit(commitMessage, newTree.sha, baseCommitSha);
             await this.updateRef(commit.sha);
 
             console.log('Multiple files updated successfully');
@@ -133,25 +152,43 @@ class GitHubService {
         }
     }
 
-    // Get base tree SHA
-    async getBaseTree() {
-        const response = await fetch(`${this.baseURL}/repos/${this.repo}/git/refs/heads/${this.branch}`, {
+    // Get latest commit SHA and its tree SHA
+    async getBaseCommitAndTree() {
+        await this.fetchReady;
+        const refResponse = await fetch(`${this.baseURL}/repos/${this.repo}/git/refs/heads/${this.branch}`, {
             headers: {
                 'Authorization': `token ${this.token}`,
                 'Accept': 'application/vnd.github.v3+json'
             }
         });
 
-        if (!response.ok) {
-            throw new Error('Failed to get base tree');
+        if (!refResponse.ok) {
+            throw new Error('Failed to get branch reference');
         }
 
-        const data = await response.json();
-        return data.object.sha;
+        const refData = await refResponse.json();
+        const commitSha = refData.object.sha;
+
+        const commitResponse = await fetch(`${this.baseURL}/repos/${this.repo}/git/commits/${commitSha}`, {
+            headers: {
+                'Authorization': `token ${this.token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+
+        if (!commitResponse.ok) {
+            throw new Error('Failed to get commit details');
+        }
+
+        const commitData = await commitResponse.json();
+        const treeSha = commitData.tree.sha;
+
+        return { commitSha, treeSha };
     }
 
     // Create blob
-    async createBlob(content) {
+    async createBlob(content, encoding = 'utf-8') {
+        await this.fetchReady;
         const response = await fetch(`${this.baseURL}/repos/${this.repo}/git/blobs`, {
             method: 'POST',
             headers: {
@@ -161,7 +198,7 @@ class GitHubService {
             },
             body: JSON.stringify({
                 content: content,
-                encoding: 'utf-8'
+                encoding: encoding
             })
         });
 
@@ -173,7 +210,8 @@ class GitHubService {
     }
 
     // Create tree
-    async createTree(tree, baseTree) {
+    async createTree(tree, baseTreeSha) {
+        await this.fetchReady;
         const response = await fetch(`${this.baseURL}/repos/${this.repo}/git/trees`, {
             method: 'POST',
             headers: {
@@ -183,7 +221,7 @@ class GitHubService {
             },
             body: JSON.stringify({
                 tree: tree,
-                base_tree: baseTree
+                base_tree: baseTreeSha
             })
         });
 
@@ -196,6 +234,7 @@ class GitHubService {
 
     // Create commit
     async createCommit(message, treeSha, parentSha) {
+        await this.fetchReady;
         const response = await fetch(`${this.baseURL}/repos/${this.repo}/git/commits`, {
             method: 'POST',
             headers: {
@@ -219,6 +258,7 @@ class GitHubService {
 
     // Update reference
     async updateRef(commitSha) {
+        await this.fetchReady;
         const response = await fetch(`${this.baseURL}/repos/${this.repo}/git/refs/heads/${this.branch}`, {
             method: 'PATCH',
             headers: {
@@ -241,6 +281,7 @@ class GitHubService {
     // Trigger deployment (for Render/Railway)
     async triggerDeployment() {
         try {
+            await this.fetchReady;
             // For Render, you can trigger a webhook
             const renderWebhookUrl = process.env.RENDER_WEBHOOK_URL;
             if (renderWebhookUrl) {
@@ -321,6 +362,7 @@ class GitHubService {
     // Get deployment status
     async getDeploymentStatus() {
         try {
+            await this.fetchReady;
             const response = await fetch(`${this.baseURL}/repos/${this.repo}/deployments`, {
                 headers: {
                     'Authorization': `token ${this.token}`,
