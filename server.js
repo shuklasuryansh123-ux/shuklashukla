@@ -106,6 +106,10 @@ app.get('/debug-admin.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'debug-admin.html'));
 });
 
+app.get('/test-modern.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'test-modern.html'));
+});
+
 // Contact form endpoint
 app.post('/api/contact', async (req, res) => {
     try {

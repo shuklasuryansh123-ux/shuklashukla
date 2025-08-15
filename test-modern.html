@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Website Test - Shukla & Shukla</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--pure-white);
+            min-height: 100vh;
+        }
+        
+        .test-section {
+            margin: 2rem 0;
+            padding: 2rem;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius-lg);
+            background: var(--off-white);
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .test-card {
+            background: var(--pure-white);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--light-gray);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .test-button {
+            background: var(--pure-black);
+            color: var(--pure-white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .test-button:hover {
+            background: var(--gold);
+            color: var(--pure-black);
+        }
+        
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            margin: 0.5rem 0;
+            font-weight: 500;
+        }
+        
+        .status.success { background: var(--success); color: white; }
+        .status.error { background: var(--error); color: white; }
+        .status.warning { background: var(--warning); color: white; }
+        .status.info { background: var(--info); color: white; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Modern Website Test Suite</h1>
+        
+        <div class="test-section">
+            <h2>1. Server & API Tests</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Server Health</h3>
+                    <button class="test-button" onclick="testServerHealth()">Test Server</button>
+                    <div id="serverStatus"></div>
+                </div>
+                
+                <div class="test-card">
+                    <h3>AI APIs</h3>
+                    <button class="test-button" onclick="testAIAPIs()">Test AI</button>
+                    <div id="aiStatus"></div>
+                </div>
+                
+                <div class="test-card">
+                    <h3>Admin Panel</h3>
+                    <button class="test-button" onclick="testAdminPanel()">Test Admin</button>
+                    <div id="adminStatus"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. Design & Animation Tests</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>GSAP Animations</h3>
+                    <button class="test-button" onclick="testGSAP()">Test Animations</button>
+                    <div id="gsapStatus"></div>
+                </div>
+                
+                <div class="test-card">
+                    <h3>Modern UI Elements</h3>
+                    <button class="test-button" onclick="testUIElements()">Test UI</button>
+                    <div id="uiStatus"></div>
+                </div>
+                
+                <div class="test-card">
+                    <h3>Responsive Design</h3>
+                    <button class="test-button" onclick="testResponsive()">Test Responsive</button>
+                    <div id="responsiveStatus"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. Functionality Tests</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>ChatGPT Widget</h3>
+                    <button class="test-button" onclick="testChatGPT()">Test ChatGPT</button>
+                    <div id="chatgptStatus"></div>
+                </div>
+                
+                <div class="test-card">
+                    <h3>Contact Form</h3>
+                    <button class="test-button" onclick="testContactForm()">Test Form</button>
+                    <div id="contactStatus"></div>
+                </div>
+                
+                <div class="test-card">
+                    <h3>Modal System</h3>
+                    <button class="test-button" onclick="testModals()">Test Modals</button>
+                    <div id="modalStatus"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>4. Quick Navigation</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <a href="/" class="test-button" style="text-decoration: none; display: inline-block;">🏠 Main Website</a>
+                </div>
+                
+                <div class="test-card">
+                    <a href="/admin.html" class="test-button" style="text-decoration: none; display: inline-block;">⚙️ Admin Panel</a>
+                </div>
+                
+                <div class="test-card">
+                    <a href="/debug-admin.html" class="test-button" style="text-decoration: none; display: inline-block;">🔧 Debug Admin</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>5. Test Results Summary</h2>
+            <div id="testSummary"></div>
+        </div>
+    </div>
+
+    <script>
+        // Test functions
+        async function testServerHealth() {
+            const statusDiv = document.getElementById('serverStatus');
+            statusDiv.innerHTML = '<div class="status info">Testing...</div>';
+            
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                
+                if (data.status === 'healthy') {
+                    statusDiv.innerHTML = '<div class="status success">✅ Server is healthy</div>';
+                } else {
+                    statusDiv.innerHTML = '<div class="status error">❌ Server issues detected</div>';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="status error">❌ Server connection failed</div>';
+            }
+        }
+
+        async function testAIAPIs() {
+            const statusDiv = document.getElementById('aiStatus');
+            statusDiv.innerHTML = '<div class="status info">Testing AI APIs...</div>';
+            
+            const apis = [
+                { name: 'AI Insights', url: '/api/ai/insights' },
+                { name: 'Bug Detection', url: '/api/ai/detect-bugs' },
+                { name: 'SEO Analysis', url: '/api/ai/seo-analysis' }
+            ];
+            
+            let results = [];
+            
+            for (const api of apis) {
+                try {
+                    const response = await fetch(api.url);
+                    const data = await response.json();
+                    results.push(`✅ ${api.name}`);
+                } catch (error) {
+                    results.push(`❌ ${api.name}`);
+                }
+            }
+            
+            statusDiv.innerHTML = `<div class="status success">${results.join('<br>')}</div>`;
+        }
+
+        function testAdminPanel() {
+            const statusDiv = document.getElementById('adminStatus');
+            statusDiv.innerHTML = '<div class="status info">Testing Admin Panel...</div>';
+            
+            // Test if admin functions are available
+            const functions = ['saveHero', 'saveAbout', 'detectBugs', 'analyzeSEO'];
+            let results = [];
+            
+            functions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    results.push(`✅ ${func}`);
+                } else {
+                    results.push(`❌ ${func}`);
+                }
+            });
+            
+            statusDiv.innerHTML = `<div class="status success">${results.join('<br>')}</div>`;
+        }
+
+        function testGSAP() {
+            const statusDiv = document.getElementById('gsapStatus');
+            statusDiv.innerHTML = '<div class="status info">Testing GSAP...</div>';
+            
+            try {
+                // Test if GSAP is loaded
+                if (typeof gsap !== 'undefined') {
+                    // Create a simple animation test
+                    const testElement = document.createElement('div');
+                    testElement.style.cssText = 'width: 50px; height: 50px; background: var(--gold); position: absolute; top: 0; left: 0;';
+                    document.body.appendChild(testElement);
+                    
+                    gsap.to(testElement, {
+                        x: 100,
+                        duration: 0.5,
+                        onComplete: () => {
+                            document.body.removeChild(testElement);
+                            statusDiv.innerHTML = '<div class="status success">✅ GSAP animations working</div>';
+                        }
+                    });
+                } else {
+                    statusDiv.innerHTML = '<div class="status error">❌ GSAP not loaded</div>';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="status error">❌ GSAP test failed</div>';
+            }
+        }
+
+        function testUIElements() {
+            const statusDiv = document.getElementById('uiStatus');
+            statusDiv.innerHTML = '<div class="status info">Testing UI Elements...</div>';
+            
+            // Test CSS custom properties
+            const root = getComputedStyle(document.documentElement);
+            const tests = [
+                { name: 'CSS Variables', test: () => root.getPropertyValue('--pure-black') !== '' },
+                { name: 'Modern Colors', test: () => root.getPropertyValue('--gold') !== '' },
+                { name: 'Typography', test: () => root.getPropertyValue('--font-heading') !== '' }
+            ];
+            
+            let results = [];
+            tests.forEach(test => {
+                if (test.test()) {
+                    results.push(`✅ ${test.name}`);
+                } else {
+                    results.push(`❌ ${test.name}`);
+                }
+            });
+            
+            statusDiv.innerHTML = `<div class="status success">${results.join('<br>')}</div>`;
+        }
+
+        function testResponsive() {
+            const statusDiv = document.getElementById('responsiveStatus');
+            statusDiv.innerHTML = '<div class="status info">Testing Responsive Design...</div>';
+            
+            const width = window.innerWidth;
+            let breakpoint = '';
+            
+            if (width < 480) breakpoint = 'Mobile (XS)';
+            else if (width < 768) breakpoint = 'Mobile (S)';
+            else if (width < 1024) breakpoint = 'Tablet';
+            else breakpoint = 'Desktop';
+            
+            statusDiv.innerHTML = `<div class="status success">✅ Current breakpoint: ${breakpoint} (${width}px)</div>`;
+        }
+
+        function testChatGPT() {
+            const statusDiv = document.getElementById('chatgptStatus');
+            statusDiv.innerHTML = '<div class="status info">Testing ChatGPT Widget...</div>';
+            
+            const widget = document.querySelector('.chatgpt-widget');
+            const toggleFunction = typeof window.toggleChatGPT;
+            
+            if (widget && toggleFunction === 'function') {
+                statusDiv.innerHTML = '<div class="status success">✅ ChatGPT widget available</div>';
+            } else {
+                statusDiv.innerHTML = '<div class="status error">❌ ChatGPT widget not found</div>';
+            }
+        }
+
+        function testContactForm() {
+            const statusDiv = document.getElementById('contactStatus');
+            statusDiv.innerHTML = '<div class="status info">Testing Contact Form...</div>';
+            
+            const form = document.getElementById('contactForm');
+            if (form) {
+                statusDiv.innerHTML = '<div class="status success">✅ Contact form found</div>';
+            } else {
+                statusDiv.innerHTML = '<div class="status error">❌ Contact form not found</div>';
+            }
+        }
+
+        function testModals() {
+            const statusDiv = document.getElementById('modalStatus');
+            statusDiv.innerHTML = '<div class="status info">Testing Modal System...</div>';
+            
+            const modals = document.querySelectorAll('.modal');
+            if (modals.length > 0) {
+                statusDiv.innerHTML = `<div class="status success">✅ ${modals.length} modals found</div>`;
+            } else {
+                statusDiv.innerHTML = '<div class="status warning">⚠️ No modals found (may be normal)</div>';
+            }
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testServerHealth();
+                testUIElements();
+                testResponsive();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
