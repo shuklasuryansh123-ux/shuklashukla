@@ -1524,7 +1524,57 @@ a {
     .mobile-menu-toggle {
         display: flex;
     }
-    
+
+    /* Show mobile nav when toggled open */
+    .premium-nav.open {
+        display: block;
+        position: absolute;
+        top: var(--header-height);
+        left: 0;
+        right: 0;
+        background: var(--pure-white);
+        border-bottom: 1px solid var(--light-gray);
+        box-shadow: var(--shadow-md);
+        z-index: 1002;
+    }
+
+    .premium-nav.open .nav-list {
+        flex-direction: column;
+        gap: 0;
+        padding: var(--spacing-md) 0;
+    }
+
+    .premium-nav.open .nav-item {
+        width: 100%;
+    }
+
+    .premium-nav.open .nav-link {
+        display: block;
+        width: 100%;
+        padding: var(--spacing-md) var(--spacing-xl);
+    }
+
+    /* Mobile dropdown behavior */
+    .premium-nav .nav-item.dropdown .dropdown-menu {
+        position: static;
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+        display: none;
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .premium-nav .nav-item.dropdown.open .dropdown-menu {
+        display: block;
+    }
+
+    /* Prevent background scroll when menu is open */
+    body.noscroll {
+        overflow: hidden;
+    }
+
     .hero-container {
         grid-template-columns: 1fr;
         text-align: center;
