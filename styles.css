@@ -744,6 +744,10 @@ a {
     margin: var(--spacing-2xl) 0;
 }
 
+.trusted-scroll:hover .scroll-content {
+	animation-play-state: paused;
+}
+
 .scroll-container {
     overflow: hidden;
     position: relative;
@@ -1609,6 +1613,9 @@ a {
         right: var(--spacing-md);
         bottom: var(--spacing-md);
     }
+
+    .sticky-contact-bar { display: block; }
+    body { padding-bottom: 72px; }
 }
 
 @media (max-width: 480px) {
@@ -1638,3 +1645,39 @@ a {
         padding: var(--spacing-lg);
     }
 }
+
+.sticky-contact-bar {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1000;
+	background: var(--pure-white);
+	border-top: 1px solid var(--light-gray);
+	box-shadow: var(--shadow-md);
+	display: none;
+}
+.sticky-contact-inner {
+	max-width: var(--container-width, 1200px);
+	margin: 0 auto;
+	padding: var(--spacing-md) var(--spacing-xl);
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: var(--spacing-md);
+}
+.sticky-contact-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 10px 12px;
+	border-radius: var(--radius-md);
+	border: 1px solid var(--light-gray);
+	background: var(--pure-white);
+	color: var(--pure-black);
+	font-weight: 600;
+	text-decoration: none;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.sticky-contact-btn:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.sticky-contact-btn .icon { font-size: 1.1rem; }
