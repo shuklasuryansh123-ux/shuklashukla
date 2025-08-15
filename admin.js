@@ -1597,6 +1597,339 @@ Service 3</textarea>
 
 // Initialize admin panel when DOM is loaded
 let adminPanel;
+
+// Global function wrapper to ensure adminPanel is available
+function getAdminPanel() {
+    if (!adminPanel) {
+        console.error('AdminPanel not initialized yet!');
+        return null;
+    }
+    return adminPanel;
+}
+
+// Global wrapper functions for all admin panel methods
+window.showForgotPassword = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.showForgotPassword();
+};
+
+window.closeForgotPasswordModal = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.closeForgotPasswordModal();
+};
+
+window.sendPasswordReset = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.sendPasswordReset();
+};
+
+window.saveAllChangesWithDeploy = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveAllChangesWithDeploy();
+};
+
+window.saveAllChanges = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveAllChanges();
+};
+
+window.previewWebsite = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.previewWebsite();
+};
+
+window.exportData = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.exportData();
+};
+
+window.importData = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.importData();
+};
+
+window.logout = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.logout();
+};
+
+window.saveHero = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveHero();
+};
+
+window.saveAbout = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveAbout();
+};
+
+window.saveFounders = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveFounders();
+};
+
+window.savePracticeAreas = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.savePracticeAreas();
+};
+
+window.saveBlog = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveBlog();
+};
+
+window.saveGallery = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveGallery();
+};
+
+window.saveReviews = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveReviews();
+};
+
+window.saveFAQ = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveFAQ();
+};
+
+window.saveContact = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveContact();
+};
+
+window.saveSettings = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveSettings();
+};
+
+window.closeModal = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.closeModal();
+};
+
+window.execCommand = (command, value = null) => {
+    const panel = getAdminPanel();
+    if (panel) panel.execCommand(command, value);
+};
+
+window.insertImage = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.insertImage();
+};
+
+window.insertTable = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.insertTable();
+};
+
+window.insertCode = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.insertCode();
+};
+
+window.insertQuote = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.insertQuote();
+};
+
+window.saveRichText = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveRichText();
+};
+
+// AI Intelligence functions
+window.loadAIDashboard = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.loadAIDashboard();
+};
+
+window.detectBugs = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.detectBugs();
+};
+
+window.fixAllBugs = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.fixAllBugs();
+};
+
+window.analyzeSEO = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.analyzeSEO();
+};
+
+window.optimizeSEO = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.optimizeSEO();
+};
+
+window.generateBlogs = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.generateBlogs();
+};
+
+window.publishBlogs = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.publishBlogs();
+};
+
+window.optimizeTraffic = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.optimizeTraffic();
+};
+
+window.analyzeIndianKeywords = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.analyzeIndianKeywords();
+};
+
+window.testChatGPT = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.testChatGPT();
+};
+
+window.viewChatHistory = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.viewChatHistory();
+};
+
+// Additional functions needed
+window.addNewBlog = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.addNewBlog();
+};
+
+window.addNewGallery = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.addNewGallery();
+};
+
+window.editHero = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.editHero();
+};
+
+window.editAbout = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.editAbout();
+};
+
+window.saveFounders = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveFounders();
+};
+
+window.addPracticeArea = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.addPracticeArea();
+};
+
+window.savePracticeAreas = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.savePracticeAreas();
+};
+
+window.importBlogs = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.importBlogs();
+};
+
+window.exportBlogs = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.exportBlogs();
+};
+
+window.bulkUpload = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.bulkUpload();
+};
+
+window.exportGallery = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.exportGallery();
+};
+
+window.addNewReview = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.addNewReview();
+};
+
+window.addNewFAQ = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.addNewFAQ();
+};
+
+window.saveContact = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveContact();
+};
+
+window.createBackup = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.createBackup();
+};
+
+window.restoreBackup = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.restoreBackup();
+};
+
+window.exportFullData = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.exportFullData();
+};
+
+window.saveSettings = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveSettings();
+};
+
+window.refreshAISuggestions = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.refreshAISuggestions();
+};
+
+window.refreshAIDecisions = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.refreshAIDecisions();
+};
+
+window.refreshUserPatterns = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.refreshUserPatterns();
+};
+
+window.applyAISuggestions = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.applyAISuggestions();
+};
+
+window.autoOptimize = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.autoOptimize();
+};
+
+window.generateContent = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.generateContent();
+};
+
+window.analyzeTrends = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.analyzeTrends();
+};
+
+window.saveAIConfig = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.saveAIConfig();
+};
+
+window.closeForgotPasswordModal = () => {
+    const panel = getAdminPanel();
+    if (panel) panel.closeForgotPasswordModal();
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing Admin Panel...');
     adminPanel = new AdminPanel();

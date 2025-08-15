@@ -14,7 +14,7 @@
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VF1BQC45ZR"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
+        dataLayer = dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-VF1BQC45ZR');
@@ -41,7 +41,7 @@
                     <button type="submit" class="admin-btn login-btn">🔐 Login to Admin Panel</button>
                 </form>
                 <div class="login-actions">
-                    <button type="button" class="forgot-password-btn" onclick="adminPanel.showForgotPassword()">🔑 Forgot Password?</button>
+                    <button type="button" class="forgot-password-btn" onclick="showForgotPassword()">🔑 Forgot Password?</button>
                 </div>
                 <div class="login-footer">
                     <p>Access restricted to authorized personnel only</p>
@@ -58,12 +58,12 @@
                 <p>Shukla & Shukla Associates - Website Management</p>
             </div>
             <div class="admin-controls">
-                <button class="admin-btn" onclick="adminPanel.saveAllChangesWithDeploy()">🚀 Save & Deploy</button>
-                <button class="admin-btn" onclick="adminPanel.saveAllChanges()">💾 Save Changes</button>
-                <button class="admin-btn" onclick="adminPanel.previewWebsite()">👁️ Preview Website</button>
-                <button class="admin-btn" onclick="adminPanel.exportData()">📤 Export Data</button>
-                <button class="admin-btn" onclick="adminPanel.importData()">📥 Import Data</button>
-                <button class="admin-btn" onclick="adminPanel.logout()">🚪 Logout</button>
+                <button class="admin-btn" onclick="saveAllChangesWithDeploy()">🚀 Save & Deploy</button>
+                <button class="admin-btn" onclick="saveAllChanges()">💾 Save Changes</button>
+                <button class="admin-btn" onclick="previewWebsite()">👁️ Preview Website</button>
+                <button class="admin-btn" onclick="exportData()">📤 Export Data</button>
+                <button class="admin-btn" onclick="importData()">📥 Import Data</button>
+                <button class="admin-btn" onclick="logout()">🚪 Logout</button>
             </div>
         </div>
     </header>
@@ -112,10 +112,10 @@
                 </div>
                 <div class="dashboard-card">
                     <h3>🔄 Quick Actions</h3>
-                    <button class="quick-btn" onclick="adminPanel.addNewBlog()">+ New Blog Post</button>
-                    <button class="quick-btn" onclick="adminPanel.addNewGallery()">+ New Gallery Item</button>
-                    <button class="quick-btn" onclick="adminPanel.editHero()">✏️ Edit Hero</button>
-                    <button class="quick-btn" onclick="adminPanel.editAbout()">✏️ Edit About</button>
+                    <button class="quick-btn" onclick="addNewBlog()">+ New Blog Post</button>
+                    <button class="quick-btn" onclick="addNewGallery()">+ New Gallery Item</button>
+                    <button class="quick-btn" onclick="editHero()">✏️ Edit Hero</button>
+                    <button class="quick-btn" onclick="editAbout()">✏️ Edit About</button>
                 </div>
                 <div class="dashboard-card">
                     <h3>📈 Recent Changes</h3>
@@ -146,7 +146,7 @@
                     <label>Background Color:</label>
                     <input type="color" id="heroBgColor" value="#f8f9fa" class="admin-input">
                 </div>
-                <button class="admin-btn" onclick="adminPanel.saveHero()">💾 Save Hero Section</button>
+                <button class="admin-btn" onclick="saveHero()">💾 Save Hero Section</button>
             </div>
         </div>
 
@@ -162,14 +162,14 @@
                     <label>About Content:</label>
                     <div class="rich-editor" id="aboutEditor">
                         <div class="editor-toolbar">
-                            <button type="button" onclick="adminPanel.execCommand('bold')">B</button>
-                            <button type="button" onclick="adminPanel.execCommand('italic')">I</button>
-                            <button type="button" onclick="adminPanel.execCommand('underline')">U</button>
-                            <button type="button" onclick="adminPanel.execCommand('insertUnorderedList')">• List</button>
-                            <button type="button" onclick="adminPanel.execCommand('insertOrderedList')">1. List</button>
-                            <button type="button" onclick="adminPanel.execCommand('formatBlock', 'h2')">H2</button>
-                            <button type="button" onclick="adminPanel.execCommand('formatBlock', 'h3')">H3</button>
-                            <button type="button" onclick="adminPanel.execCommand('createLink')">🔗 Link</button>
+                            <button type="button" onclick="execCommand('bold')">B</button>
+                            <button type="button" onclick="execCommand('italic')">I</button>
+                            <button type="button" onclick="execCommand('underline')">U</button>
+                            <button type="button" onclick="execCommand('insertUnorderedList')">• List</button>
+                            <button type="button" onclick="execCommand('insertOrderedList')">1. List</button>
+                            <button type="button" onclick="execCommand('formatBlock', 'h2')">H2</button>
+                            <button type="button" onclick="execCommand('formatBlock', 'h3')">H3</button>
+                            <button type="button" onclick="execCommand('createLink')">🔗 Link</button>
                         </div>
                         <div class="editor-content" id="aboutContent" contenteditable="true">
                             <p>Shukla & Shukla Associates is a distinguished law firm based in Indore, Madhya Pradesh, committed to delivering exceptional legal services across a comprehensive range of practice areas.</p>
@@ -194,7 +194,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="admin-btn" onclick="adminPanel.saveAbout()">💾 Save About Section</button>
+                <button class="admin-btn" onclick="saveAbout()">💾 Save About Section</button>
             </div>
         </div>
 
@@ -242,7 +242,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="admin-btn" onclick="adminPanel.saveFounders()">💾 Save Founders</button>
+                <button class="admin-btn" onclick="saveFounders()">💾 Save Founders</button>
             </div>
         </div>
 
@@ -279,8 +279,8 @@ Corporate Litigation</textarea>
                     </div>
                     <!-- More practice areas will be added dynamically -->
                 </div>
-                <button class="admin-btn" onclick="adminPanel.addPracticeArea()">+ Add Practice Area</button>
-                <button class="admin-btn" onclick="adminPanel.savePracticeAreas()">💾 Save Practice Areas</button>
+                <button class="admin-btn" onclick="addPracticeArea()">+ Add Practice Area</button>
+                <button class="admin-btn" onclick="savePracticeAreas()">💾 Save Practice Areas</button>
             </div>
         </div>
 
@@ -289,9 +289,9 @@ Corporate Litigation</textarea>
             <div class="admin-section">
                 <h2>📝 Blog Posts Management</h2>
                 <div class="blog-controls">
-                    <button class="admin-btn" onclick="adminPanel.addNewBlog()">+ New Blog Post</button>
-                    <button class="admin-btn" onclick="adminPanel.importBlogs()">📥 Import Blogs</button>
-                    <button class="admin-btn" onclick="adminPanel.exportBlogs()">📤 Export Blogs</button>
+                    <button class="admin-btn" onclick="addNewBlog()">+ New Blog Post</button>
+                    <button class="admin-btn" onclick="importBlogs()">📥 Import Blogs</button>
+                    <button class="admin-btn" onclick="exportBlogs()">📤 Export Blogs</button>
                 </div>
                 <div class="blog-list" id="blogList">
                     <!-- Blog posts will be loaded here -->
@@ -304,9 +304,9 @@ Corporate Litigation</textarea>
             <div class="admin-section">
                 <h2>📷 Gallery Management</h2>
                 <div class="gallery-controls">
-                    <button class="admin-btn" onclick="adminPanel.addNewGallery()">+ New Gallery Item</button>
-                    <button class="admin-btn" onclick="adminPanel.bulkUpload()">📁 Bulk Upload</button>
-                    <button class="admin-btn" onclick="adminPanel.exportGallery()">📤 Export Gallery</button>
+                    <button class="admin-btn" onclick="addNewGallery()">+ New Gallery Item</button>
+                    <button class="admin-btn" onclick="bulkUpload()">📁 Bulk Upload</button>
+                    <button class="admin-btn" onclick="exportGallery()">📤 Export Gallery</button>
                 </div>
                 <div class="gallery-list" id="galleryList">
                     <!-- Gallery items will be loaded here -->
@@ -319,7 +319,7 @@ Corporate Litigation</textarea>
             <div class="admin-section">
                 <h2>⭐ Client Reviews Management</h2>
                 <div class="reviews-controls">
-                    <button class="admin-btn" onclick="adminPanel.addNewReview()">+ New Review</button>
+                    <button class="admin-btn" onclick="addNewReview()">+ New Review</button>
                 </div>
                 <div class="reviews-list" id="reviewsList">
                     <!-- Reviews will be loaded here -->
@@ -332,7 +332,7 @@ Corporate Litigation</textarea>
             <div class="admin-section">
                 <h2>❓ FAQ Management</h2>
                 <div class="faq-controls">
-                    <button class="admin-btn" onclick="adminPanel.addNewFAQ()">+ New FAQ</button>
+                    <button class="admin-btn" onclick="addNewFAQ()">+ New FAQ</button>
                 </div>
                 <div class="faq-list" id="faqList">
                     <!-- FAQs will be loaded here -->
@@ -360,7 +360,7 @@ Corporate Litigation</textarea>
                     <label>Office Hours:</label>
                     <input type="text" id="contactHours" value="Monday - Friday: 9:00 AM - 6:00 PM" class="admin-input">
                 </div>
-                <button class="admin-btn" onclick="adminPanel.saveContact()">💾 Save Contact Info</button>
+                <button class="admin-btn" onclick="saveContact()">💾 Save Contact Info</button>
             </div>
         </div>
 
@@ -401,12 +401,12 @@ Corporate Litigation</textarea>
                     </div>
                     <div class="setting-group">
                         <h3>Backup & Restore</h3>
-                        <button class="admin-btn" onclick="adminPanel.createBackup()">💾 Create Backup</button>
-                        <button class="admin-btn" onclick="adminPanel.restoreBackup()">📥 Restore Backup</button>
-                        <button class="admin-btn" onclick="adminPanel.exportFullData()">📤 Export All Data</button>
+                        <button class="admin-btn" onclick="createBackup()">💾 Create Backup</button>
+                        <button class="admin-btn" onclick="restoreBackup()">📥 Restore Backup</button>
+                        <button class="admin-btn" onclick="exportFullData()">📤 Export All Data</button>
                     </div>
                 </div>
-                <button class="admin-btn" onclick="adminPanel.saveSettings()">💾 Save Settings</button>
+                <button class="admin-btn" onclick="saveSettings()">💾 Save Settings</button>
             </div>
         </div>
 
@@ -440,7 +440,7 @@ Corporate Litigation</textarea>
                         <div class="ai-suggestions" id="aiSuggestions">
                             <p>Loading AI suggestions...</p>
                         </div>
-                        <button class="admin-btn" onclick="adminPanel.refreshAISuggestions()">🔄 Refresh Suggestions</button>
+                        <button class="admin-btn" onclick="refreshAISuggestions()">🔄 Refresh Suggestions</button>
                     </div>
                     
                     <div class="ai-card">
@@ -448,7 +448,7 @@ Corporate Litigation</textarea>
                         <div class="ai-decisions" id="aiDecisions">
                             <p>Loading AI decisions...</p>
                         </div>
-                        <button class="admin-btn" onclick="adminPanel.refreshAIDecisions()">🔄 Refresh Decisions</button>
+                        <button class="admin-btn" onclick="refreshAIDecisions()">🔄 Refresh Decisions</button>
                     </div>
                     
                     <div class="ai-card">
@@ -456,16 +456,16 @@ Corporate Litigation</textarea>
                         <div class="user-patterns" id="userPatterns">
                             <p>Loading user patterns...</p>
                         </div>
-                        <button class="admin-btn" onclick="adminPanel.refreshUserPatterns()">🔄 Refresh Patterns</button>
+                        <button class="admin-btn" onclick="refreshUserPatterns()">🔄 Refresh Patterns</button>
                     </div>
                     
                     <div class="ai-card">
                         <h3>🚀 AI Actions</h3>
                         <div class="ai-actions">
-                            <button class="admin-btn" onclick="adminPanel.applyAISuggestions()">✅ Apply AI Suggestions</button>
-                            <button class="admin-btn" onclick="adminPanel.autoOptimize()">⚡ Auto-Optimize Website</button>
-                            <button class="admin-btn" onclick="adminPanel.generateContent()">📝 Generate Content</button>
-                            <button class="admin-btn" onclick="adminPanel.analyzeTrends()">📊 Analyze Trends</button>
+                            <button class="admin-btn" onclick="applyAISuggestions()">✅ Apply AI Suggestions</button>
+                            <button class="admin-btn" onclick="autoOptimize()">⚡ Auto-Optimize Website</button>
+                            <button class="admin-btn" onclick="generateContent()">📝 Generate Content</button>
+                            <button class="admin-btn" onclick="analyzeTrends()">📊 Analyze Trends</button>
                         </div>
                     </div>
                     
@@ -488,7 +488,7 @@ Corporate Litigation</textarea>
                             <label>Enable Auto-Optimization:</label>
                             <input type="checkbox" id="aiAutoOptimize" checked>
                         </div>
-                        <button class="admin-btn" onclick="adminPanel.saveAIConfig()">💾 Save AI Config</button>
+                        <button class="admin-btn" onclick="saveAIConfig()">💾 Save AI Config</button>
                     </div>
                     
                     <div class="ai-card">
@@ -496,8 +496,8 @@ Corporate Litigation</textarea>
                         <div class="bug-list" id="bugList">
                             <p>Loading bug analysis...</p>
                         </div>
-                        <button class="admin-btn" onclick="adminPanel.detectBugs()">🔍 Detect Bugs</button>
-                        <button class="admin-btn" onclick="adminPanel.fixAllBugs()">🔧 Fix All Bugs</button>
+                        <button class="admin-btn" onclick="detectBugs()">🔍 Detect Bugs</button>
+                        <button class="admin-btn" onclick="fixAllBugs()">🔧 Fix All Bugs</button>
                     </div>
                     
                     <div class="ai-card">
@@ -505,8 +505,8 @@ Corporate Litigation</textarea>
                         <div class="seo-metrics" id="seoMetrics">
                             <p>Loading SEO analysis...</p>
                         </div>
-                        <button class="admin-btn" onclick="adminPanel.analyzeSEO()">📈 Analyze SEO</button>
-                        <button class="admin-btn" onclick="adminPanel.optimizeSEO()">⚡ Optimize SEO</button>
+                        <button class="admin-btn" onclick="analyzeSEO()">📈 Analyze SEO</button>
+                        <button class="admin-btn" onclick="optimizeSEO()">⚡ Optimize SEO</button>
                     </div>
                     
                     <div class="ai-card">
@@ -514,8 +514,8 @@ Corporate Litigation</textarea>
                         <div class="blog-queue" id="blogQueue">
                             <p>No generated blogs yet...</p>
                         </div>
-                        <button class="admin-btn" onclick="adminPanel.generateBlogs()">✍️ Generate Blogs</button>
-                        <button class="admin-btn" onclick="adminPanel.publishBlogs()">📤 Publish Blogs</button>
+                        <button class="admin-btn" onclick="generateBlogs()">✍️ Generate Blogs</button>
+                        <button class="admin-btn" onclick="publishBlogs()">📤 Publish Blogs</button>
                     </div>
                     
                     <div class="ai-card">
@@ -523,8 +523,8 @@ Corporate Litigation</textarea>
                         <div class="traffic-metrics" id="trafficMetrics">
                             <p>Loading traffic optimization...</p>
                         </div>
-                        <button class="admin-btn" onclick="adminPanel.optimizeTraffic()">🚀 Optimize Traffic</button>
-                        <button class="admin-btn" onclick="adminPanel.analyzeIndianKeywords()">🔍 Analyze Keywords</button>
+                        <button class="admin-btn" onclick="optimizeTraffic()">🚀 Optimize Traffic</button>
+                        <button class="admin-btn" onclick="analyzeIndianKeywords()">🔍 Analyze Keywords</button>
                     </div>
                     
                     <div class="ai-card">
@@ -532,8 +532,8 @@ Corporate Litigation</textarea>
                         <div class="chatgpt-status" id="chatgptStatus">
                             <p>✅ ChatGPT is active and ready to assist visitors</p>
                         </div>
-                        <button class="admin-btn" onclick="adminPanel.testChatGPT()">🧪 Test ChatGPT</button>
-                        <button class="admin-btn" onclick="adminPanel.viewChatHistory()">📋 View Chat History</button>
+                        <button class="admin-btn" onclick="testChatGPT()">🧪 Test ChatGPT</button>
+                        <button class="admin-btn" onclick="viewChatHistory()">📋 View Chat History</button>
                     </div>
                 </div>
             </div>
@@ -545,29 +545,29 @@ Corporate Litigation</textarea>
         <div class="modal-content large">
             <div class="modal-header">
                 <h3 id="modalTitle">Rich Text Editor</h3>
-                <span class="close" onclick="adminPanel.closeModal()">&times;</span>
+                <span class="close" onclick="closeModal()">&times;</span>
             </div>
             <div class="modal-body">
                 <div class="rich-editor-full">
                     <div class="editor-toolbar-full">
-                        <button type="button" onclick="adminPanel.execCommand('bold')" title="Bold">B</button>
-                        <button type="button" onclick="adminPanel.execCommand('italic')" title="Italic">I</button>
-                        <button type="button" onclick="adminPanel.execCommand('underline')" title="Underline">U</button>
-                        <button type="button" onclick="adminPanel.execCommand('strikeThrough')" title="Strikethrough">S</button>
-                        <button type="button" onclick="adminPanel.execCommand('insertUnorderedList')" title="Bullet List">•</button>
-                        <button type="button" onclick="adminPanel.execCommand('insertOrderedList')" title="Numbered List">1.</button>
-                        <button type="button" onclick="adminPanel.execCommand('formatBlock', 'h1')" title="Heading 1">H1</button>
-                        <button type="button" onclick="adminPanel.execCommand('formatBlock', 'h2')" title="Heading 2">H2</button>
-                        <button type="button" onclick="adminPanel.execCommand('formatBlock', 'h3')" title="Heading 3">H3</button>
-                        <button type="button" onclick="adminPanel.execCommand('formatBlock', 'h4')" title="Heading 4">H4</button>
-                        <button type="button" onclick="adminPanel.execCommand('justifyLeft')" title="Align Left">⫷</button>
-                        <button type="button" onclick="adminPanel.execCommand('justifyCenter')" title="Align Center">⫸</button>
-                        <button type="button" onclick="adminPanel.execCommand('justifyRight')" title="Align Right">⫹</button>
-                        <button type="button" onclick="adminPanel.execCommand('createLink')" title="Insert Link">🔗</button>
-                        <button type="button" onclick="adminPanel.insertImage()" title="Insert Image">🖼️</button>
-                        <button type="button" onclick="adminPanel.insertTable()" title="Insert Table">📊</button>
-                        <button type="button" onclick="adminPanel.insertCode()" title="Insert Code">💻</button>
-                        <button type="button" onclick="adminPanel.insertQuote()" title="Insert Quote">💬</button>
+                        <button type="button" onclick="execCommand('bold')" title="Bold">B</button>
+                        <button type="button" onclick="execCommand('italic')" title="Italic">I</button>
+                        <button type="button" onclick="execCommand('underline')" title="Underline">U</button>
+                        <button type="button" onclick="execCommand('strikeThrough')" title="Strikethrough">S</button>
+                        <button type="button" onclick="execCommand('insertUnorderedList')" title="Bullet List">•</button>
+                        <button type="button" onclick="execCommand('insertOrderedList')" title="Numbered List">1.</button>
+                        <button type="button" onclick="execCommand('formatBlock', 'h1')" title="Heading 1">H1</button>
+                        <button type="button" onclick="execCommand('formatBlock', 'h2')" title="Heading 2">H2</button>
+                        <button type="button" onclick="execCommand('formatBlock', 'h3')" title="Heading 3">H3</button>
+                        <button type="button" onclick="execCommand('formatBlock', 'h4')" title="Heading 4">H4</button>
+                        <button type="button" onclick="execCommand('justifyLeft')" title="Align Left">⫷</button>
+                        <button type="button" onclick="execCommand('justifyCenter')" title="Align Center">⫸</button>
+                        <button type="button" onclick="execCommand('justifyRight')" title="Align Right">⫹</button>
+                        <button type="button" onclick="execCommand('createLink')" title="Insert Link">🔗</button>
+                        <button type="button" onclick="insertImage()" title="Insert Image">🖼️</button>
+                        <button type="button" onclick="insertTable()" title="Insert Table">📊</button>
+                        <button type="button" onclick="insertCode()" title="Insert Code">💻</button>
+                        <button type="button" onclick="insertQuote()" title="Insert Quote">💬</button>
                     </div>
                     <div class="editor-content-full" id="richTextContent" contenteditable="true">
                         <!-- Rich text content will be loaded here -->
@@ -575,8 +575,8 @@ Corporate Litigation</textarea>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="admin-btn" onclick="adminPanel.saveRichText()">💾 Save Content</button>
-                <button class="admin-btn secondary" onclick="adminPanel.closeModal()">❌ Cancel</button>
+                <button class="admin-btn" onclick="saveRichText()">💾 Save Content</button>
+                <button class="admin-btn secondary" onclick="closeModal()">❌ Cancel</button>
             </div>
         </div>
     </div>
@@ -586,7 +586,7 @@ Corporate Litigation</textarea>
         <div class="modal-content">
             <div class="modal-header">
                 <h3>🔑 Forgot Password</h3>
-                <span class="close" onclick="adminPanel.closeForgotPasswordModal()">&times;</span>
+                <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
             </div>
             <div class="modal-body">
                 <div class="forgot-password-form">
@@ -596,7 +596,7 @@ Corporate Litigation</textarea>
                         <input type="email" id="forgotEmail" class="admin-input" placeholder="shukla.suryansh123@gmail.com">
                     </div>
                     <div id="forgotMessage" class="message-container"></div>
-                    <button class="admin-btn" onclick="adminPanel.sendPasswordReset()">📧 Send Reset Link</button>
+                    <button class="admin-btn" onclick="sendPasswordReset()">📧 Send Reset Link</button>
                 </div>
             </div>
         </div>
