@@ -1,11 +1,4 @@
-// Modern Law Firm Website JavaScript with GSAP Animations
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { TextPlugin } from 'gsap/TextPlugin';
-
-// Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger, TextPlugin);
-
+// Modern Law Firm Website JavaScript
 class ModernLawWebsite {
     constructor() {
         this.init();
@@ -24,15 +17,23 @@ class ModernLawWebsite {
     initializeLoadingScreen() {
         const loadingScreen = document.getElementById('loading-screen');
         const mainContent = document.getElementById('main-content');
+        
+        if (!loadingScreen || !mainContent) {
+            console.error('Loading screen elements not found');
+            return;
+        }
+
         const quotes = document.querySelectorAll('.quote');
         let currentQuote = 0;
 
         // Rotate quotes
-        setInterval(() => {
-            quotes[currentQuote].classList.remove('active');
-            currentQuote = (currentQuote + 1) % quotes.length;
-            quotes[currentQuote].classList.add('active');
-        }, 3000);
+        if (quotes.length > 0) {
+            setInterval(() => {
+                quotes[currentQuote].classList.remove('active');
+                currentQuote = (currentQuote + 1) % quotes.length;
+                quotes[currentQuote].classList.add('active');
+            }, 3000);
+        }
 
         // Simulate loading progress
         let progress = 0;
@@ -47,12 +48,14 @@ class ModernLawWebsite {
                 
                 // Hide loading screen and show main content
                 setTimeout(() => {
-                    loadingScreen.classList.add('fade-out');
-                    mainContent.style.display = 'block';
-                    mainContent.classList.add('loaded');
+                    if (loadingScreen) loadingScreen.classList.add('fade-out');
+                    if (mainContent) {
+                        mainContent.style.display = 'block';
+                        mainContent.classList.add('loaded');
+                    }
                     
-                    // Initialize GSAP animations after content is loaded
-                    this.initializeGSAPAnimations();
+                    // Initialize animations after content is loaded
+                    this.initializeAnimations();
                 }, 500);
             }
             
@@ -65,54 +68,15 @@ class ModernLawWebsite {
         }, 100);
     }
 
-    initializeGSAPAnimations() {
-        // Hero section animations
-        gsap.from('.hero-badge', {
-            y: -50,
-            opacity: 0,
-            duration: 1,
-            ease: 'power3.out'
-        });
-
-        gsap.from('.hero-title .title-line', {
-            y: 100,
-            opacity: 0,
-            duration: 1.2,
-            stagger: 0.2,
-            ease: 'power3.out'
-        });
-
-        gsap.from('.hero-description', {
-            y: 50,
-            opacity: 0,
-            duration: 1,
-            delay: 0.8,
-            ease: 'power2.out'
-        });
-
-        gsap.from('.hero-actions', {
-            y: 30,
-            opacity: 0,
-            duration: 0.8,
-            delay: 1.2,
-            ease: 'back.out(1.7)'
-        });
-
-        gsap.from('.hero-stats .stat-item', {
-            y: 50,
-            opacity: 0,
-            duration: 0.8,
-            stagger: 0.1,
-            delay: 1.5,
-            ease: 'power2.out'
-        });
-
-        gsap.from('.hero-visual', {
-            x: 100,
-            opacity: 0,
-            duration: 1.2,
-            delay: 1,
-            ease: 'power3.out'
+    initializeAnimations() {
+        // Simple CSS animations without GSAP
+        const animatedElements = document.querySelectorAll('.hero-badge, .hero-title .title-line, .hero-description, .hero-actions, .hero-stats .stat-item, .hero-visual');
+        
+        animatedElements.forEach((element, index) => {
+            setTimeout(() => {
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+            }, index * 200);
         });
 
         // Animate stats numbers
@@ -122,16 +86,18 @@ class ModernLawWebsite {
     animateStats() {
         const stats = document.querySelectorAll('.stat-number');
         stats.forEach(stat => {
-            const target = parseInt(stat.getAttribute('data-target'));
-            gsap.to(stat, {
-                textContent: target,
-                duration: 2,
-                ease: 'power2.out',
-                snap: { textContent: 1 },
-                onUpdate: function() {
-                    stat.textContent = Math.ceil(stat.textContent);
+            const target = parseInt(stat.getAttribute('data-target')) || 0;
+            let current = 0;
+            const increment = target / 50;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
                 }
-            });
+                stat.textContent = Math.ceil(current);
+            }, 50);
         });
     }
 

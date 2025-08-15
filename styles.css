@@ -1378,6 +1378,9 @@ a:hover {
     font-weight: 600;
     margin-bottom: var(--spacing-lg);
     border: 1px solid rgba(212, 175, 55, 0.2);
+    opacity: 0;
+    transform: translateY(-30px);
+    transition: all 0.8s ease-out;
 }
 
 .hero-title {
@@ -1392,7 +1395,7 @@ a:hover {
     display: block;
     opacity: 0;
     transform: translateY(30px);
-    animation: titleReveal 0.8s ease-out forwards;
+    transition: all 0.8s ease-out;
 }
 
 .title-line:nth-child(1) { animation-delay: 0.2s; }
@@ -1420,7 +1423,7 @@ a:hover {
     line-height: 1.7;
     opacity: 0;
     transform: translateY(20px);
-    animation: fadeInUp 0.8s ease-out 0.8s forwards;
+    transition: all 0.8s ease-out;
 }
 
 @keyframes fadeInUp {
@@ -1436,7 +1439,7 @@ a:hover {
     margin-bottom: var(--spacing-3xl);
     opacity: 0;
     transform: translateY(20px);
-    animation: fadeInUp 0.8s ease-out 1s forwards;
+    transition: all 0.8s ease-out;
 }
 
 .btn-primary, .btn-secondary {
@@ -1485,7 +1488,7 @@ a:hover {
     gap: var(--spacing-xl);
     opacity: 0;
     transform: translateY(20px);
-    animation: fadeInUp 0.8s ease-out 1.2s forwards;
+    transition: all 0.8s ease-out;
 }
 
 .stat-item {
@@ -1525,7 +1528,7 @@ a:hover {
     align-items: center;
     opacity: 0;
     transform: translateX(50px);
-    animation: slideInRight 1s ease-out 1.4s forwards;
+    transition: all 1s ease-out;
 }
 
 @keyframes slideInRight {
