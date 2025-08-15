@@ -12,12 +12,127 @@ class ModernLawWebsite {
     }
 
     init() {
+        this.initializeLoadingScreen();
         this.setupEventListeners();
         this.initializeAnimations();
         this.setupScrollEffects();
         this.initializeChatGPT();
         this.setupAdminSync();
         this.setupIntersectionObserver();
+    }
+
+    initializeLoadingScreen() {
+        const loadingScreen = document.getElementById('loading-screen');
+        const mainContent = document.getElementById('main-content');
+        const quotes = document.querySelectorAll('.quote');
+        let currentQuote = 0;
+
+        // Rotate quotes
+        setInterval(() => {
+            quotes[currentQuote].classList.remove('active');
+            currentQuote = (currentQuote + 1) % quotes.length;
+            quotes[currentQuote].classList.add('active');
+        }, 3000);
+
+        // Simulate loading progress
+        let progress = 0;
+        const progressFill = document.querySelector('.progress-fill');
+        const progressText = document.querySelector('.progress-text');
+        
+        const loadingInterval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(loadingInterval);
+                
+                // Hide loading screen and show main content
+                setTimeout(() => {
+                    loadingScreen.classList.add('fade-out');
+                    mainContent.style.display = 'block';
+                    mainContent.classList.add('loaded');
+                    
+                    // Initialize GSAP animations after content is loaded
+                    this.initializeGSAPAnimations();
+                }, 500);
+            }
+            
+            if (progressFill) progressFill.style.width = `${progress}%`;
+            if (progressText) {
+                const texts = ['Loading Excellence...', 'Preparing Legal Solutions...', 'Almost Ready...', 'Welcome to Shukla & Shukla'];
+                const textIndex = Math.floor(progress / 25);
+                progressText.textContent = texts[textIndex] || texts[texts.length - 1];
+            }
+        }, 100);
+    }
+
+    initializeGSAPAnimations() {
+        // Hero section animations
+        gsap.from('.hero-badge', {
+            y: -50,
+            opacity: 0,
+            duration: 1,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.hero-title .title-line', {
+            y: 100,
+            opacity: 0,
+            duration: 1.2,
+            stagger: 0.2,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.hero-description', {
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            delay: 0.8,
+            ease: 'power2.out'
+        });
+
+        gsap.from('.hero-actions', {
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            delay: 1.2,
+            ease: 'back.out(1.7)'
+        });
+
+        gsap.from('.hero-stats .stat-item', {
+            y: 50,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            delay: 1.5,
+            ease: 'power2.out'
+        });
+
+        gsap.from('.hero-visual', {
+            x: 100,
+            opacity: 0,
+            duration: 1.2,
+            delay: 1,
+            ease: 'power3.out'
+        });
+
+        // Animate stats numbers
+        this.animateStats();
+    }
+
+    animateStats() {
+        const stats = document.querySelectorAll('.stat-number');
+        stats.forEach(stat => {
+            const target = parseInt(stat.getAttribute('data-target'));
+            gsap.to(stat, {
+                textContent: target,
+                duration: 2,
+                ease: 'power2.out',
+                snap: { textContent: 1 },
+                onUpdate: function() {
+                    stat.textContent = Math.ceil(stat.textContent);
+                }
+            });
+        });
     }
 
     setupEventListeners() {
