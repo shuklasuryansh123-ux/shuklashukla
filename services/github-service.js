@@ -127,8 +127,10 @@ class GitHubService {
 
             const tree = [];
             for (const file of files) {
-                const content = typeof file.content === 'string' ? file.content : JSON.stringify(file.content, null, 2);
-                const blob = await this.createBlob(content);
+                const isString = typeof file.content === 'string';
+                const content = isString ? file.content : JSON.stringify(file.content, null, 2);
+                const encoding = file.encoding === 'base64' ? 'base64' : 'utf-8';
+                const blob = await this.createBlob(content, encoding);
                 
                 tree.push({
                     path: file.path,
@@ -185,7 +187,7 @@ class GitHubService {
     }
 
     // Create blob
-    async createBlob(content) {
+    async createBlob(content, encoding = 'utf-8') {
         await this.fetchReady;
         const response = await fetch(`${this.baseURL}/repos/${this.repo}/git/blobs`, {
             method: 'POST',
@@ -196,7 +198,7 @@ class GitHubService {
             },
             body: JSON.stringify({
                 content: content,
-                encoding: 'utf-8'
+                encoding: encoding
             })
         });
 

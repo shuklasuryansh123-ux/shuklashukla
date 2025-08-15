@@ -3,6 +3,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const https = require('https');
 const http = require('http');
+const GitHubService = require('./github-service');
 
 class AIIntelligenceService {
     constructor() {
@@ -1112,13 +1113,16 @@ The evolving legal landscape requires continuous learning and adaptation. Our te
             const toPublish = 2 - (state.blogsPublishedToday || 0);
             const posts = [];
             for (let i = 0; i < toPublish; i++) {
-                const topic = this.pickDailyTopic(i);
+                const topic = await this.fetchTrendingTopic(i).catch(() => this.pickDailyTopic(i));
                 const post = await this.generateBlogPost(topic);
                 const image = await this.generateBlogImage(topic);
                 posts.push({ ...post, image, date: new Date().toISOString().slice(0, 10), author: 'Legal Team' });
             }
             if (posts.length > 0) {
                 await this.publishBlogsToContent(posts);
+                await this.commitContentFiles([
+                    { path: 'content/blog.json', localPath: path.join(__dirname, '..', 'content', 'blog.json') }
+                ], 'AI: publish daily blog posts');
                 state.lastBlogPublishDate = today;
                 state.blogsPublishedToday = (state.blogsPublishedToday || 0) + posts.length;
                 await this.saveAIState(state);
@@ -1189,6 +1193,11 @@ The evolving legal landscape requires continuous learning and adaptation. Our te
         try {
             await this.generateSitemap();
             await this.generateRSSFeed();
+            await this.commitContentFiles([
+                { path: 'sitemap.xml', localPath: path.join(__dirname, '..', 'sitemap.xml') },
+                { path: 'robots.txt', localPath: path.join(__dirname, '..', 'robots.txt') },
+                { path: 'rss.xml', localPath: path.join(__dirname, '..', 'rss.xml') }
+            ], 'AI: update SEO assets');
         } catch (error) {
             console.error('Error updating SEO assets:', error);
         }
@@ -1227,6 +1236,40 @@ The evolving legal landscape requires continuous learning and adaptation. Our te
         } catch (error) {
             console.error('Failed to generate RSS feed:', error);
         }
+    }
+
+    async commitContentFiles(fileSpecs, message) {
+        try {
+            const gh = new GitHubService();
+            await gh.init();
+            const files = [];
+            for (const spec of fileSpecs) {
+                const content = await fs.readFile(spec.localPath);
+                const ext = spec.path.split('.').pop().toLowerCase();
+                const isText = ['json', 'md', 'txt', 'xml'].includes(ext);
+                files.push({
+                    path: spec.path,
+                    content: isText ? content.toString('utf-8') : content.toString('base64'),
+                    encoding: isText ? 'utf-8' : 'base64'
+                });
+            }
+            await gh.updateMultipleFiles(files, message);
+        } catch (e) {
+            console.log('GitHub commit skipped/failed (AI):', e.message || e);
+        }
+    }
+
+    async fetchTrendingTopic(offset) {
+        // Placeholder for external API. Can be wired to News API or legal data source.
+        // For now simulate a small rotation with Supreme Court in focus
+        const topics = [
+            'Latest Supreme Court Judgment - Key Takeaways',
+            'High Court Significant Ruling - Analysis',
+            'Corporate Compliance Update - New Circular',
+            'Criminal Law Amendment - What Changed',
+            'Property Law - Recent Landmark Case'
+        ];
+        return topics[offset % topics.length];
     }
 }
 

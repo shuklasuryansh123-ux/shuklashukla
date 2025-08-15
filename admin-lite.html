@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admin Lite - Shukla & Shukla</title>
+	<link rel="stylesheet" href="styles.css">
+	<style>
+		.admin-lite{max-width:900px;margin:40px auto;padding:20px;border:1px solid #eee;border-radius:12px;background:#fff}
+		.admin-lite h1{margin-bottom:16px}
+		.section{border-top:1px solid #eee;margin-top:20px;padding-top:20px}
+		label{display:block;font-weight:600;margin:10px 0 6px}
+		input[type=text],input[type=email],input[type=password],textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
+		button{background:#000;color:#fff;border:none;border-radius:8px;padding:10px 14px;cursor:pointer}
+		.row{display:flex;gap:12px}
+		.row>*{flex:1}
+		.small{font-size:12px;color:#666}
+		#status{margin-top:10px}
+	</style>
+</head>
+<body>
+	<div class="admin-lite">
+		<h1>Admin Lite</h1>
+		<div id="login">
+			<div class="row">
+				<input id="email" type="email" placeholder="Email">
+				<input id="password" type="password" placeholder="Password">
+			</div>
+			<button onclick="adminLite.login()">Login</button>
+			<div id="status" class="small"></div>
+		</div>
+		<div id="panel" style="display:none">
+			<p class="small">Logged in. Use the forms below to edit content and upload files. Changes are committed to GitHub.</p>
+			<div class="section">
+				<h3>Hero Content</h3>
+				<label>Title</label>
+				<input id="heroTitle" type="text">
+				<label>Subtitle</label>
+				<textarea id="heroSubtitle" rows="3"></textarea>
+				<button onclick="adminLite.saveSection('hero')">Save Hero</button>
+			</div>
+			<div class="section">
+				<h3>About Content</h3>
+				<label>Title</label>
+				<input id="aboutTitle" type="text">
+				<label>Content (HTML)</label>
+				<textarea id="aboutContent" rows="6"></textarea>
+				<button onclick="adminLite.saveSection('about')">Save About</button>
+			</div>
+			<div class="section">
+				<h3>Create Blog Post</h3>
+				<label>Title</label>
+				<input id="blogTitle" type="text">
+				<label>Content (HTML)</label>
+				<textarea id="blogContent" rows="8"></textarea>
+				<button onclick="adminLite.createBlog()">Publish Blog</button>
+			</div>
+			<div class="section">
+				<h3>Upload Image</h3>
+				<input id="fileInput" type="file" accept="image/*">
+				<button onclick="adminLite.uploadFile()">Upload</button>
+				<div id="uploadResult" class="small"></div>
+			</div>
+		</div>
+	</div>
+	<script src="admin-lite.js" defer></script>
+</body>
+</html>
