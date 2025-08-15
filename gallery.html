@@ -3,11 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery - Shukla & Shukla Associates</title>
-    <meta name="description" content="Photo gallery showcasing our legal practice and team">
+    <title>Gallery - Shukla & Shukla</title>
+    <meta name="description" content="Explore our gallery showcasing legal excellence, achievements, and moments from Shukla & Shukla law firm.">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" as="style">
+    <link rel="preload" href="styles.css" as="style">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="gallery.css">
     
@@ -21,122 +29,376 @@
     </script>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <a href="index.html">Shukla & Shukla Associates</a>
+    <!-- Premium Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <div class="logo-symbol">📸</div>
+                <div class="logo-text">Gallery</div>
             </div>
-            <ul class="nav-menu">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li class="dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">Case Status</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" class="dropdown-item">Supreme Court</a></li>
-                        <li><a href="#" class="dropdown-item">High Court</a></li>
-                        <li><a href="#" class="dropdown-item">District Court</a></li>
-                        <li><a href="#" class="dropdown-item">Family Court</a></li>
-                    </ul>
-                </li>
-                <li><a href="#" class="nav-link">Client Files</a></li>
-                <li><a href="index.html#practice-areas" class="nav-link">Practice Areas</a></li>
-                <li class="dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">More</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="index.html#reviews" class="dropdown-item">Client Reviews</a></li>
-                        <li><a href="gallery.html" class="dropdown-item active">Gallery</a></li>
-                        <li><a href="blog.html" class="dropdown-item">Blog</a></li>
-                        <li><a href="index.html#about" class="dropdown-item">About</a></li>
-                        <li><a href="index.html#faq" class="dropdown-item">FAQs</a></li>
-                        <li><a href="more.html" class="dropdown-item">Notepad</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="progress-text">Loading Gallery...</div>
+            </div>
+            <div class="loading-quotes">
+                <div class="quote active">"Every picture tells a story of excellence."</div>
+                <div class="quote">"Capturing moments of legal triumph."</div>
+                <div class="quote">"Visual stories of justice served."</div>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <!-- Gallery Header -->
-    <section class="gallery-header">
-        <div class="container">
-            <h1>Photo Gallery</h1>
-            <p>Glimpses of our legal practice, team, and professional environment</p>
-        </div>
-    </section>
+    <!-- Main Content -->
+    <div id="main-content" class="main-content" style="display: none;">
+        <!-- Premium Header -->
+        <header class="premium-header">
+            <div class="header-container">
+                <div class="header-logo">
+                    <a href="/" class="logo-link">
+                        <span class="logo-icon">⚖️</span>
+                        <span class="logo-text">Shukla & Shukla</span>
+                    </a>
+                </div>
+                
+                <nav class="premium-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link">Case Status <span class="dropdown-arrow">▼</span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="https://www.sci.gov.in/case-status-case-no/" target="_blank">Supreme Court</a></li>
+                                <li><a href="https://mphc.gov.in/case-status" target="_blank">High Court</a></li>
+                                <li><a href="https://district.mphc.gov.in/en/case-status" target="_blank">District Court</a></li>
+                                <li><a href="https://familycourts.mphc.gov.in" target="_blank">Family Court</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://erp.mphc.gov.in/login" target="_blank" class="nav-link">Client Files</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/#practice-areas" class="nav-link">Practice Areas</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link">More <span class="dropdown-arrow">▼</span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/#reviews">Client Reviews</a></li>
+                                <li><a href="gallery.html" class="nav-link active">Gallery</a></li>
+                                <li><a href="blog.html">Blog</a></li>
+                                <li><a href="/#about">About</a></li>
+                                <li><a href="/#faq">FAQs</a></li>
+                                <li><a href="more.html">Notepad</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <a href="/#contact" class="cta-button-primary">Get Consultation</a>
+                    <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </header>
 
-    <!-- Gallery Content -->
-    <section class="gallery-content">
-        <div class="container">
-            <div class="gallery-filters">
-                <div class="search-box">
-                    <input type="text" id="gallerySearch" placeholder="Search photos...">
-                </div>
-                <div class="category-filters">
-                    <button class="filter-btn active" data-category="all">All</button>
-                    <button class="filter-btn" data-category="office">Office</button>
-                    <button class="filter-btn" data-category="court">Court</button>
-                    <button class="filter-btn" data-category="team">Team</button>
-                    <button class="filter-btn" data-category="events">Events</button>
-                </div>
+        <!-- Gallery Hero Section -->
+        <section class="gallery-hero">
+            <div class="hero-background">
+                <div class="hero-particles"></div>
+                <div class="hero-gradient"></div>
             </div>
             
-            <div class="gallery-grid" id="galleryGrid">
-                <!-- Gallery items will be loaded here -->
-            </div>
-            
-            <div class="gallery-pagination">
-                <button class="pagination-btn" id="prevPage">‹ Previous</button>
-                <div class="page-numbers" id="pageNumbers">
-                    <!-- Page numbers will be generated here -->
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <span class="badge-icon">📸</span>
+                        <span class="badge-text">Our Gallery</span>
+                    </div>
+                    
+                    <h1 class="hero-title">
+                        <span class="title-line">Visual</span>
+                        <span class="title-line highlight">Excellence</span>
+                        <span class="title-line">in Law</span>
+                    </h1>
+                    
+                    <p class="hero-description">
+                        Explore our gallery showcasing moments of legal triumph, team achievements, 
+                        and the dedication that makes Shukla & Shukla a premier law firm.
+                    </p>
+                    
+                    <div class="hero-actions">
+                        <a href="#featured" class="btn-primary">
+                            <span class="btn-text">View Featured</span>
+                            <span class="btn-icon">→</span>
+                        </a>
+                        <a href="#all-gallery" class="btn-secondary">
+                            <span class="btn-text">All Photos</span>
+                            <span class="btn-icon">📸</span>
+                        </a>
+                    </div>
                 </div>
-                <button class="pagination-btn" id="nextPage">Next ›</button>
+                
+                <div class="hero-visual">
+                    <div class="hero-image">
+                        <div class="image-placeholder">
+                            <div class="placeholder-icon">📸</div>
+                            <div class="placeholder-text">Legal Excellence</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Shukla & Shukla Associates</h3>
-                    <p>Professional legal services with integrity and excellence.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="index.html#about">About</a></li>
-                        <li><a href="index.html#practice-areas">Practice Areas</a></li>
-                        <li><a href="index.html#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Contact Info</h4>
-                    <p>Phone: +91 73899 94519</p>
-                    <p>Email: shukla.suryansh123@gmail.com</p>
-                    <p>Indore, Madhya Pradesh</p>
+        <!-- Gallery Search & Filter -->
+        <section class="gallery-search">
+            <div class="section-container">
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Search photos..." class="search-input">
+                        <button class="search-btn">
+                            <span class="search-icon">🔍</span>
+                        </button>
+                    </div>
+                    
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-category="all">All Photos</button>
+                        <button class="filter-tab" data-category="events">Events</button>
+                        <button class="filter-tab" data-category="team">Team</button>
+                        <button class="filter-tab" data-category="office">Office</button>
+                        <button class="filter-tab" data-category="awards">Awards</button>
+                        <button class="filter-tab" data-category="cases">Cases</button>
+                    </div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Shukla & Shukla Associates. All rights reserved.</p>
+        </section>
+
+        <!-- Featured Gallery -->
+        <section id="featured" class="featured-gallery">
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="section-badge">Featured</div>
+                    <h2 class="section-title">Featured Moments</h2>
+                    <p class="section-subtitle">Highlighting our most significant achievements and memorable moments</p>
+                </div>
+                
+                <div class="featured-grid">
+                    <div class="featured-item large">
+                        <div class="gallery-image">
+                            <div class="image-placeholder">
+                                <div class="placeholder-icon">🏆</div>
+                            </div>
+                            <div class="image-overlay">
+                                <div class="image-category">Awards</div>
+                                <h3 class="image-title">Supreme Court Victory</h3>
+                                <p class="image-description">Celebrating a landmark victory in constitutional law</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="featured-sidebar">
+                        <div class="featured-item small">
+                            <div class="gallery-image">
+                                <div class="image-placeholder">
+                                    <div class="placeholder-icon">👥</div>
+                                </div>
+                                <div class="image-overlay">
+                                    <div class="image-category">Team</div>
+                                    <h4 class="image-title">Team Meeting</h4>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="featured-item small">
+                            <div class="gallery-image">
+                                <div class="image-placeholder">
+                                    <div class="placeholder-icon">🏛️</div>
+                                </div>
+                                <div class="image-overlay">
+                                    <div class="image-category">Office</div>
+                                    <h4 class="image-title">Modern Office</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </footer>
+        </section>
+
+        <!-- All Gallery -->
+        <section id="all-gallery" class="all-gallery">
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="section-badge">Gallery</div>
+                    <h2 class="section-title">Complete Gallery</h2>
+                    <p class="section-subtitle">Browse through our complete collection of photos and memories</p>
+                </div>
+                
+                <div class="gallery-grid" id="galleryGrid">
+                    <!-- Gallery items will be dynamically loaded here -->
+                </div>
+                
+                <div class="load-more-container">
+                    <button id="loadMoreBtn" class="load-more-btn">
+                        <span class="btn-text">Load More Photos</span>
+                        <span class="btn-icon">↓</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Stats -->
+        <section class="gallery-stats">
+            <div class="section-container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="150">0</div>
+                        <div class="stat-label">Photos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="25">0</div>
+                        <div class="stat-label">Events</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="50">0</div>
+                        <div class="stat-label">Awards</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="100">0</div>
+                        <div class="stat-label">Cases</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Premium Footer -->
+        <footer class="premium-footer">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <div class="footer-logo">
+                            <span class="logo-icon">⚖️</span>
+                            <span class="logo-text">Shukla & Shukla</span>
+                        </div>
+                        <p class="footer-description">
+                            Premier legal services with integrity, expertise, and unwavering commitment to justice.
+                        </p>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>Quick Links</h4>
+                        <ul class="footer-links">
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/#about">About</a></li>
+                            <li><a href="/#practice-areas">Services</a></li>
+                            <li><a href="blog.html">Blog</a></li>
+                            <li><a href="/#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>Practice Areas</h4>
+                        <ul class="footer-links">
+                            <li><a href="/#practice-areas">Corporate Law</a></li>
+                            <li><a href="/#practice-areas">Family Law</a></li>
+                            <li><a href="/#practice-areas">Civil Litigation</a></li>
+                            <li><a href="/#practice-areas">Property Law</a></li>
+                            <li><a href="/#practice-areas">Criminal Defense</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>Connect With Us</h4>
+                        <div class="social-buttons">
+                            <a href="https://wa.me/911234567890" class="social-btn whatsapp-btn" target="_blank">
+                                <span class="btn-icon">📱</span>
+                                <span class="btn-text">WhatsApp</span>
+                            </a>
+                            <a href="tel:+911234567890" class="social-btn call-btn">
+                                <span class="btn-icon">📞</span>
+                                <span class="btn-text">Call Now</span>
+                            </a>
+                            <a href="mailto:shukla.suryansh123@gmail.com" class="social-btn email-btn">
+                                <span class="btn-icon">✉️</span>
+                                <span class="btn-text">Email</span>
+                            </a>
+                            <a href="https://www.linkedin.com/in/suryansh-shukla-a31aaa165" class="social-btn linkedin-btn" target="_blank">
+                                <span class="btn-icon">💼</span>
+                                <span class="btn-text">LinkedIn</span>
+                            </a>
+                            <a href="https://www.instagram.com/suryansh_shukla/" class="social-btn instagram-btn" target="_blank">
+                                <span class="btn-icon">📸</span>
+                                <span class="btn-text">Instagram</span>
+                            </a>
+                            <a href="https://share.google.com/5FkhkNitHEdvXWQRx" class="social-btn google-btn" target="_blank">
+                                <span class="btn-icon">🔍</span>
+                                <span class="btn-text">Google</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom">
+                    <div class="footer-bottom-content">
+                        <p>&copy; 2024 Shukla & Shukla. All rights reserved.</p>
+                        <div class="footer-bottom-links">
+                            <a href="admin.html">Admin Panel</a>
+                            <a href="#privacy">Privacy Policy</a>
+                            <a href="#terms">Terms of Service</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
 
     <!-- Gallery Modal -->
     <div id="galleryModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <div id="galleryModalContent"></div>
+            <div class="modal-image">
+                <div class="image-placeholder">
+                    <div class="placeholder-icon">📸</div>
+                </div>
+            </div>
+            <div class="modal-info">
+                <h3 class="modal-title">Gallery Image</h3>
+                <p class="modal-description">Description of the image and its significance.</p>
+                <div class="modal-meta">
+                    <span class="modal-category">Category</span>
+                    <span class="modal-date">Date</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script defer src="gallery.js"></script>
-    <script defer src="js/ai-tracking.js"></script>
+    <!-- ChatGPT Widget -->
+    <div class="chatgpt-widget">
+        <div class="chatgpt-header" onclick="toggleChatGPT()">
+            <span>🤖 Legal Assistant</span>
+            <span class="chatgpt-toggle">▼</span>
+        </div>
+        <div id="chatgpt-body" class="chatgpt-body" style="display: none;">
+            <div class="chatgpt-messages">
+                <div class="chatgpt-message bot">
+                    Hello! I'm your legal assistant. How can I help you today?
+                </div>
+            </div>
+            <div class="chatgpt-input">
+                <input type="text" placeholder="Ask me anything about legal matters...">
+                <button onclick="sendChatMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script src="gallery.js"></script>
+    <script src="js/ai-tracking.js"></script>
 </body>
 </html>
