@@ -1932,9 +1932,28 @@ window.closeForgotPasswordModal = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing Admin Panel...');
+    
+    // Initialize admin panel
     adminPanel = new AdminPanel();
     console.log('Admin Panel initialized:', adminPanel);
     
     // Make adminPanel globally available
     window.adminPanel = adminPanel;
+    
+    // Test all global functions
+    console.log('Testing global functions...');
+    const testFunctions = [
+        'showForgotPassword', 'saveAllChanges', 'logout', 'saveHero', 
+        'saveAbout', 'detectBugs', 'analyzeSEO', 'generateBlogs'
+    ];
+    
+    testFunctions.forEach(func => {
+        if (typeof window[func] === 'function') {
+            console.log(`✅ ${func}: Available`);
+        } else {
+            console.error(`❌ ${func}: Missing`);
+        }
+    });
+    
+    console.log('Admin Panel setup complete!');
 });

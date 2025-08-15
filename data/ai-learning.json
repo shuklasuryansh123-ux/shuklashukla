@@ -3,12 +3,24 @@
     "user_dmjjrcgoiropyizhl0vqe": {
       "mostVisitedSections": [
         {
+          "section": "blog",
+          "count": 5
+        },
+        {
+          "section": "gallery",
+          "count": 5
+        },
+        {
+          "section": "faq",
+          "count": 5
+        },
+        {
           "section": "contact",
-          "count": 2
+          "count": 5
         },
         {
           "section": "home",
-          "count": 1
+          "count": 4
         }
       ],
       "averageSessionDuration": 0,

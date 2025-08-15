@@ -1,531 +1,611 @@
-// Sample data for blogs and gallery
-const blogData = [
-    {
-        id: 1,
-        title: "Understanding Corporate Law in India",
-        excerpt: "A comprehensive guide to corporate law practices and regulations in India...",
-        content: "Corporate law in India is governed by the Companies Act, 2013, which provides a comprehensive framework for the incorporation, regulation, and winding up of companies. This legislation ensures transparency, accountability, and good corporate governance practices across all business entities operating in India.",
-        image: "📄",
-        date: "2025-01-15"
-    },
-    {
-        id: 2,
-        title: "Family Law: Recent Changes and Implications",
-        excerpt: "Exploring the latest amendments in family law and their impact on legal proceedings...",
-        content: "Recent amendments to family law have introduced significant changes in how divorce, child custody, and property division cases are handled. These changes aim to provide faster resolution and better protection for all parties involved.",
-        image: "👨‍👩‍👧‍👦",
-        date: "2025-01-10"
-    },
-    {
-        id: 3,
-        title: "Real Estate Law: Property Rights and Disputes",
-        excerpt: "Essential information about property rights, title verification, and dispute resolution...",
-        content: "Real estate law encompasses various aspects including property rights, title verification, land acquisition, and dispute resolution. Understanding these legal frameworks is crucial for both buyers and sellers in real estate transactions.",
-        image: "🏠",
-        date: "2025-01-05"
+// Modern Law Firm Website JavaScript with GSAP Animations
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { TextPlugin } from 'gsap/TextPlugin';
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+class ModernLawWebsite {
+    constructor() {
+        this.init();
     }
-];
 
-const galleryData = [
-    { id: 1, title: "Court Proceedings", image: "⚖️", description: "Professional court proceedings and legal consultations" },
-    { id: 2, title: "Client Meetings", image: "🤝", description: "Meeting with clients to discuss case strategies" },
-    { id: 3, title: "Legal Documents", image: "📋", description: "Preparation and review of important legal documents" },
-    { id: 4, title: "Office Environment", image: "🏢", description: "Our professional office environment" },
-    { id: 5, title: "Team Collaboration", image: "👥", description: "Our legal team working together" },
-    { id: 6, title: "Legal Library", image: "📚", description: "Our comprehensive legal library and resources" }
-];
+    init() {
+        this.setupEventListeners();
+        this.initializeAnimations();
+        this.setupScrollEffects();
+        this.initializeChatGPT();
+        this.setupAdminSync();
+        this.setupIntersectionObserver();
+    }
 
-// Mobile Navigation Toggle
-const hamburger = document.querySelector('.hamburger');
-const navMenu = document.querySelector('.nav-menu');
+    setupEventListeners() {
+        // Header scroll effect
+        window.addEventListener('scroll', this.handleScroll.bind(this));
+        
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', this.handleNavClick.bind(this));
+        });
 
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', this.handleSmoothScroll.bind(this));
+        });
 
-// Close mobile menu when clicking on a link
-document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-    hamburger.classList.remove('active');
-    navMenu.classList.remove('active');
-}));
+        // Modal functionality
+        this.setupModals();
+        
+        // Contact form
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', this.handleContactSubmit.bind(this));
+        }
 
-// Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+        // FAQ toggles
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', this.toggleFAQ.bind(this));
+        });
+
+        // Trusted by scroll animation
+        this.setupTrustedByAnimation();
+    }
+
+    initializeAnimations() {
+        // Page load animation
+        gsap.from('body', {
+            opacity: 0,
+            duration: 1,
+            ease: 'power2.out'
+        });
+
+        // Hero section animations
+        const heroTimeline = gsap.timeline();
+        heroTimeline
+            .from('.hero h1', {
+                y: 100,
+                opacity: 0,
+                duration: 1.2,
+                ease: 'power3.out'
+            })
+            .from('.hero p', {
+                y: 50,
+                opacity: 0,
+                duration: 1,
+                ease: 'power2.out'
+            }, '-=0.5')
+            .from('.cta-button', {
+                y: 30,
+                opacity: 0,
+                duration: 0.8,
+                ease: 'back.out(1.7)'
+            }, '-=0.3');
+
+        // Animate trusted by items
+        gsap.from('.trusted-item', {
+            x: 100,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: '.trusted-by',
+                start: 'top 80%'
+            }
+        });
+    }
+
+    setupScrollEffects() {
+        // Header scroll effect
+        ScrollTrigger.create({
+            start: 'top -80',
+            end: 99999,
+            onUpdate: (self) => {
+                const header = document.querySelector('.header');
+                if (self.direction === 1) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            }
+        });
+
+        // Section animations
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => {
+            gsap.from(section, {
+                y: 100,
+                opacity: 0,
+                duration: 1,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        });
+
+        // Card animations
+        const cards = document.querySelectorAll('.practice-card, .blog-card, .founder-card, .gallery-item');
+        cards.forEach(card => {
+            gsap.from(card, {
+                y: 60,
+                opacity: 0,
+                duration: 0.8,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 85%'
+                }
+            });
+        });
+
+        // Stats counter animation
+        const stats = document.querySelectorAll('.stat-number');
+        stats.forEach(stat => {
+            const finalValue = parseInt(stat.textContent);
+            gsap.from(stat, {
+                textContent: 0,
+                duration: 2,
+                ease: 'power2.out',
+                snap: { textContent: 1 },
+                scrollTrigger: {
+                    trigger: stat,
+                    start: 'top 80%'
+                },
+                onUpdate: function() {
+                    stat.textContent = Math.ceil(stat.textContent);
+                }
+            });
+        });
+    }
+
+    setupTrustedByAnimation() {
+        const scrollContent = document.querySelector('.scroll-content');
+        if (scrollContent) {
+            // Clone items for infinite scroll
+            const items = scrollContent.children;
+            for (let i = 0; i < items.length; i++) {
+                const clone = items[i].cloneNode(true);
+                scrollContent.appendChild(clone);
+            }
+
+            // GSAP animation for smooth scrolling
+            gsap.to(scrollContent, {
+                x: '-50%',
+                duration: 60,
+                ease: 'none',
+                repeat: -1
             });
         }
-    });
-});
-
-// Contact form handling
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get form data
-        const formData = new FormData(this);
-        const data = {
-            name: formData.get('name'),
-            email: formData.get('email'),
-            phone: formData.get('phone'),
-            message: formData.get('message')
-        };
-        
-        // Simple validation
-        if (!data.name || !data.email || !data.message) {
-            alert('Please fill in all required fields.');
-            return;
-        }
-        
-        // Here you would typically send the data to your server
-        // For now, we'll just show a success message
-        alert('Thank you for your message! We will get back to you soon.');
-        this.reset();
-    });
-}
-
-// Navbar background on scroll
-window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 100) {
-        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-        navbar.style.backdropFilter = 'blur(10px)';
-    } else {
-        navbar.style.background = 'var(--white)';
-        navbar.style.backdropFilter = 'none';
     }
-});
 
-// FAQ Toggle
-document.querySelectorAll('.faq-question').forEach(question => {
-    question.addEventListener('click', () => {
+    handleScroll() {
+        const header = document.querySelector('.header');
+        if (window.scrollY > 100) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    }
+
+    handleNavClick(e) {
+        e.preventDefault();
+        const target = e.target.getAttribute('href');
+        if (target && target.startsWith('#')) {
+            this.scrollToSection(target);
+        }
+    }
+
+    handleSmoothScroll(e) {
+        e.preventDefault();
+        const target = e.target.getAttribute('href');
+        this.scrollToSection(target);
+    }
+
+    scrollToSection(target) {
+        const element = document.querySelector(target);
+        if (element) {
+            gsap.to(window, {
+                duration: 1,
+                scrollTo: {
+                    y: element,
+                    offsetY: 80
+                },
+                ease: 'power2.out'
+            });
+        }
+    }
+
+    setupModals() {
+        // Blog modal
+        document.querySelectorAll('.blog-card').forEach(card => {
+            card.addEventListener('click', () => {
+                this.openModal('blogModal', card.dataset.blogId);
+            });
+        });
+
+        // Gallery modal
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('click', () => {
+                this.openModal('galleryModal', item.dataset.galleryId);
+            });
+        });
+
+        // Close modal buttons
+        document.querySelectorAll('.close').forEach(closeBtn => {
+            closeBtn.addEventListener('click', () => {
+                this.closeModal();
+            });
+        });
+
+        // Close modal on outside click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    this.closeModal();
+                }
+            });
+        });
+    }
+
+    openModal(modalId, itemId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'block';
+            gsap.from(modal.querySelector('.modal-content'), {
+                scale: 0.8,
+                opacity: 0,
+                duration: 0.3,
+                ease: 'back.out(1.7)'
+            });
+            
+            // Load content based on itemId
+            this.loadModalContent(modalId, itemId);
+        }
+    }
+
+    closeModal() {
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            if (modal.style.display === 'block') {
+                gsap.to(modal.querySelector('.modal-content'), {
+                    scale: 0.8,
+                    opacity: 0,
+                    duration: 0.2,
+                    ease: 'power2.in',
+                    onComplete: () => {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+        });
+    }
+
+    loadModalContent(modalId, itemId) {
+        // Load content from data or API
+        console.log(`Loading content for ${modalId} with ID: ${itemId}`);
+    }
+
+    toggleFAQ(e) {
+        const question = e.target;
         const answer = question.nextElementSibling;
         const isActive = question.classList.contains('active');
-        
-        // Close all other FAQ items
+
+        // Close all other FAQs
         document.querySelectorAll('.faq-question').forEach(q => {
             q.classList.remove('active');
             q.nextElementSibling.classList.remove('active');
         });
-        
-        // Toggle current item
+
         if (!isActive) {
             question.classList.add('active');
             answer.classList.add('active');
+            
+            gsap.from(answer, {
+                height: 0,
+                opacity: 0,
+                duration: 0.3,
+                ease: 'power2.out'
+            });
         }
-    });
-});
+    }
 
-// Blog functionality
-let currentBlogIndex = 0;
+    async handleContactSubmit(e) {
+        e.preventDefault();
+        const form = e.target;
+        const submitBtn = form.querySelector('.submit-btn');
+        const originalText = submitBtn.textContent;
 
-function loadBlogs() {
-    const blogGrid = document.getElementById('blogGrid');
-    if (!blogGrid) return;
-    
-    // Show only 3 latest blogs
-    const displayBlogs = blogData.slice(0, 3);
-    
-    blogGrid.innerHTML = displayBlogs.map(blog => `
-        <div class="blog-card" onclick="openBlogModal(${blog.id})">
-            <div class="blog-image">${blog.image}</div>
-            <div class="blog-content">
-                <h3 class="blog-title">${blog.title}</h3>
-                <p class="blog-excerpt">${blog.excerpt}</p>
-            </div>
-        </div>
-    `).join('');
-}
+        // Show loading state
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
 
-function openBlogModal(blogId) {
-    const blog = blogData.find(b => b.id === blogId);
-    if (!blog) return;
-    
-    const modal = document.getElementById('blogModal');
-    const content = document.getElementById('blogModalContent');
-    
-    content.innerHTML = `
-        <h2>${blog.title}</h2>
-        <div class="blog-modal-image">${blog.image}</div>
-        <div class="blog-modal-date">${new Date(blog.date).toLocaleDateString()}</div>
-        <div class="blog-modal-content">${blog.content}</div>
-    `;
-    
-    modal.style.display = 'block';
-}
+        try {
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
 
-// Gallery functionality
-let currentGalleryIndex = 0;
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
 
-function loadGallery() {
-    const galleryGrid = document.getElementById('galleryGrid');
-    if (!galleryGrid) return;
-    
-    // Show only 6 items
-    const displayGallery = galleryData.slice(0, 6);
-    
-    galleryGrid.innerHTML = displayGallery.map(item => `
-        <div class="gallery-item" onclick="openGalleryModal(${item.id})">
-            <div class="gallery-image">${item.image}</div>
-            <div class="gallery-caption">${item.title}</div>
-        </div>
-    `).join('');
-}
+            const result = await response.json();
 
-function openGalleryModal(itemId) {
-    const item = galleryData.find(g => g.id === itemId);
-    if (!item) return;
-    
-    const modal = document.getElementById('galleryModal');
-    const content = document.getElementById('galleryModalContent');
-    
-    content.innerHTML = `
-        <h2>${item.title}</h2>
-        <div class="gallery-modal-image">${item.image}</div>
-        <p class="gallery-modal-description">${item.description}</p>
-    `;
-    
-    modal.style.display = 'block';
-}
-
-// Modal close functionality
-document.querySelectorAll('.close').forEach(closeBtn => {
-    closeBtn.addEventListener('click', () => {
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.style.display = 'none';
-        });
-    });
-});
-
-// Close modal when clicking outside
-window.addEventListener('click', (e) => {
-    document.querySelectorAll('.modal').forEach(modal => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-});
-
-// Blog navigation
-document.getElementById('prevBlog')?.addEventListener('click', () => {
-    // Implement blog navigation logic
-    console.log('Previous blog');
-});
-
-document.getElementById('nextBlog')?.addEventListener('click', () => {
-    // Implement blog navigation logic
-    console.log('Next blog');
-});
-
-// Gallery navigation
-document.getElementById('prevGallery')?.addEventListener('click', () => {
-    // Implement gallery navigation logic
-    console.log('Previous gallery');
-});
-
-document.getElementById('nextGallery')?.addEventListener('click', () => {
-    // Implement gallery navigation logic
-    console.log('Next gallery');
-});
-
-// Simple animation on scroll
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe elements for animation
-document.querySelectorAll('.service-card, .stat, .about-text, .review-card, .blog-card, .gallery-item').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-});
-
-// Initialize content when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    loadBlogs();
-    loadGallery();
-    initializeWebsiteSync();
-    
-    // Trigger animations when elements come into view
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.animationPlayState = 'running';
+            if (result.success) {
+                this.showNotification('Message sent successfully!', 'success');
+                form.reset();
+            } else {
+                this.showNotification(result.message || 'Failed to send message', 'error');
             }
-        });
-    }, observerOptions);
-    
-    // Observe all animated elements
-    document.querySelectorAll('.service-card, .review-card, .blog-card, .practice-card, section').forEach(el => {
-        observer.observe(el);
-    });
-});
+        } catch (error) {
+            console.error('Contact form error:', error);
+            this.showNotification('An error occurred. Please try again.', 'error');
+        } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    }
 
-// Initialize website sync with admin panel
-function initializeWebsiteSync() {
-    // Load saved website data
-    loadWebsiteData();
-    
-    // Listen for admin panel updates
-    if (typeof BroadcastChannel !== 'undefined') {
-        const channel = new BroadcastChannel('website-updates');
-        channel.onmessage = (event) => {
-            if (event.data.type === 'content-updated') {
-                updateWebsiteContent(event.data.data);
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+
+        // Add styles
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        `;
+
+        // Set background color based on type
+        const colors = {
+            success: '#4caf50',
+            error: '#f44336',
+            info: '#2196f3'
+        };
+        notification.style.backgroundColor = colors[type] || colors.info;
+
+        document.body.appendChild(notification);
+
+        // Animate in
+        gsap.to(notification, {
+            x: 0,
+            duration: 0.3,
+            ease: 'power2.out'
+        });
+
+        // Remove after 5 seconds
+        setTimeout(() => {
+            gsap.to(notification, {
+                x: '100%',
+                duration: 0.3,
+                ease: 'power2.in',
+                onComplete: () => {
+                    document.body.removeChild(notification);
+                }
+            });
+        }, 5000);
+    }
+
+    initializeChatGPT() {
+        // ChatGPT Functions
+        window.toggleChatGPT = () => {
+            console.log('toggleChatGPT called');
+            const body = document.getElementById('chatgpt-body');
+            const toggle = document.querySelector('.chatgpt-toggle');
+
+            if (!body || !toggle) {
+                console.error('ChatGPT elements not found:', { body: !!body, toggle: !!toggle });
+                return;
+            }
+
+            if (body.style.display === 'none') {
+                body.style.display = 'flex';
+                toggle.textContent = '▲';
+                toggle.style.transform = 'rotate(180deg)';
+                console.log('ChatGPT opened');
+                
+                // Animate in
+                gsap.from(body, {
+                    height: 0,
+                    opacity: 0,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            } else {
+                gsap.to(body, {
+                    height: 0,
+                    opacity: 0,
+                    duration: 0.3,
+                    ease: 'power2.in',
+                    onComplete: () => {
+                        body.style.display = 'none';
+                        toggle.textContent = '▼';
+                        toggle.style.transform = 'rotate(0deg)';
+                        console.log('ChatGPT closed');
+                    }
+                });
             }
         };
-    }
-}
 
-// ChatGPT Functions
-function toggleChatGPT() {
-    console.log('toggleChatGPT called');
-    const body = document.getElementById('chatgpt-body');
-    const toggle = document.querySelector('.chatgpt-toggle');
-    
-    if (!body || !toggle) {
-        console.error('ChatGPT elements not found:', { body: !!body, toggle: !!toggle });
-        return;
-    }
-    
-    if (body.style.display === 'none') {
-        body.style.display = 'flex';
-        toggle.textContent = '▲';
-        toggle.style.transform = 'rotate(180deg)';
-        console.log('ChatGPT opened');
-    } else {
-        body.style.display = 'none';
-        toggle.textContent = '▼';
-        toggle.style.transform = 'rotate(0deg)';
-        console.log('ChatGPT closed');
-    }
-}
+        // ChatGPT chat functionality
+        const chatInput = document.querySelector('.chatgpt-input input');
+        const chatButton = document.querySelector('.chatgpt-input button');
+        const messagesContainer = document.querySelector('.chatgpt-messages');
 
-function handleChatGPTKeyPress(event) {
-    if (event.key === 'Enter') {
-        sendChatGPTMessage();
-    }
-}
-
-async function sendChatGPTMessage() {
-    const input = document.getElementById('chatgpt-input');
-    const message = input.value.trim();
-    
-    if (!message) return;
-    
-    // Add user message
-    addChatGPTMessage(message, 'user');
-    input.value = '';
-    
-    // Show typing indicator
-    addTypingIndicator();
-    
-    try {
-        const response = await fetch('/api/ai/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ message, context: 'legal_website' })
-        });
-        
-        const data = await response.json();
-        
-        // Remove typing indicator
-        removeTypingIndicator();
-        
-        // Add bot response
-        addChatGPTMessage(data.response, 'bot');
-        
-    } catch (error) {
-        console.error('ChatGPT error:', error);
-        removeTypingIndicator();
-        addChatGPTMessage('Sorry, I\'m having trouble connecting right now. Please try again later.', 'bot');
-    }
-}
-
-function addChatGPTMessage(message, type) {
-    const messagesContainer = document.getElementById('chatgpt-messages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `chatgpt-message ${type}`;
-    messageDiv.innerHTML = `<div class="message-content">${message}</div>`;
-    
-    messagesContainer.appendChild(messageDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-function addTypingIndicator() {
-    const messagesContainer = document.getElementById('chatgpt-messages');
-    const typingDiv = document.createElement('div');
-    typingDiv.className = 'chatgpt-message bot';
-    typingDiv.id = 'typing-indicator';
-    typingDiv.innerHTML = '<div class="message-content">🤖 AI is typing...</div>';
-    
-    messagesContainer.appendChild(typingDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-function removeTypingIndicator() {
-    const typingIndicator = document.getElementById('typing-indicator');
-    if (typingIndicator) {
-        typingIndicator.remove();
-    }
-}
-
-// Load website data from localStorage
-function loadWebsiteData() {
-    const savedData = localStorage.getItem('websiteData');
-    if (savedData) {
-        const websiteData = JSON.parse(savedData);
-        updateWebsiteContent(websiteData);
-    }
-}
-
-// Update website content with new data
-function updateWebsiteContent(websiteData) {
-    // Update hero section
-    if (websiteData.hero) {
-        const heroTitle = document.querySelector('.hero h1');
-        const heroSubtitle = document.querySelector('.hero p');
-        const ctaButton = document.querySelector('.hero .cta-button');
-        const heroSection = document.querySelector('.hero');
-        
-        if (heroTitle) heroTitle.textContent = websiteData.hero.title;
-        if (heroSubtitle) heroSubtitle.textContent = websiteData.hero.subtitle;
-        if (ctaButton) ctaButton.textContent = websiteData.hero.cta;
-        if (heroSection) heroSection.style.backgroundColor = websiteData.hero.bgColor;
-    }
-    
-    // Update about section
-    if (websiteData.about) {
-        const aboutTitle = document.querySelector('#about h2');
-        const aboutContent = document.querySelector('#about .about-content');
-        
-        if (aboutTitle) aboutTitle.textContent = websiteData.about.title;
-        if (aboutContent) aboutContent.innerHTML = websiteData.about.content;
-        
-        // Update statistics
-        if (websiteData.about.stats) {
-            const stats = document.querySelectorAll('.stat-item .stat-number');
-            if (stats.length >= 3) {
-                stats[0].textContent = websiteData.about.stats.years;
-                stats[1].textContent = websiteData.about.stats.cases;
-                stats[2].textContent = websiteData.about.stats.focus;
-            }
+        if (chatButton && chatInput) {
+            chatButton.addEventListener('click', this.sendChatMessage.bind(this));
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.sendChatMessage();
+                }
+            });
         }
     }
-    
-    // Update founders section
-    if (websiteData.founders && websiteData.founders.length >= 2) {
-        const founderCards = document.querySelectorAll('.founder-card');
+
+    async sendChatMessage() {
+        const input = document.querySelector('.chatgpt-input input');
+        const messagesContainer = document.querySelector('.chatgpt-messages');
         
-        // Update founder 1
-        if (founderCards[0]) {
-            const name = founderCards[0].querySelector('h3');
-            const title = founderCards[0].querySelector('.founder-title');
-            const desc = founderCards[0].querySelector('.founder-description');
-            const expertise = founderCards[0].querySelector('.founder-expertise');
+        if (!input || !messagesContainer) return;
+
+        const message = input.value.trim();
+        if (!message) return;
+
+        // Add user message
+        const userMessage = document.createElement('div');
+        userMessage.className = 'chatgpt-message user';
+        userMessage.textContent = message;
+        messagesContainer.appendChild(userMessage);
+
+        // Clear input
+        input.value = '';
+
+        // Scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Show typing indicator
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'chatgpt-message bot';
+        typingIndicator.textContent = 'Typing...';
+        messagesContainer.appendChild(typingIndicator);
+
+        try {
+            const response = await fetch('/api/ai/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message, context: 'legal' })
+            });
+
+            const data = await response.json();
+
+            // Remove typing indicator
+            messagesContainer.removeChild(typingIndicator);
+
+            // Add bot response
+            const botMessage = document.createElement('div');
+            botMessage.className = 'chatgpt-message bot';
+            botMessage.textContent = data.response || 'I apologize, but I\'m unable to process your request at the moment.';
+            messagesContainer.appendChild(botMessage);
+
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        } catch (error) {
+            console.error('Chat error:', error);
+            messagesContainer.removeChild(typingIndicator);
             
-            if (name) name.textContent = websiteData.founders[0].name;
-            if (title) title.textContent = websiteData.founders[0].title;
-            if (desc) desc.textContent = websiteData.founders[0].description;
-            if (expertise) {
-                expertise.innerHTML = websiteData.founders[0].expertise.map(exp => 
-                    `<span class="expertise-tag">${exp}</span>`
-                ).join('');
-            }
-        }
-        
-        // Update founder 2
-        if (founderCards[1]) {
-            const name = founderCards[1].querySelector('h3');
-            const title = founderCards[1].querySelector('.founder-title');
-            const desc = founderCards[1].querySelector('.founder-description');
-            const expertise = founderCards[1].querySelector('.founder-expertise');
-            
-            if (name) name.textContent = websiteData.founders[1].name;
-            if (title) title.textContent = websiteData.founders[1].title;
-            if (desc) desc.textContent = websiteData.founders[1].description;
-            if (expertise) {
-                expertise.innerHTML = websiteData.founders[1].expertise.map(exp => 
-                    `<span class="expertise-tag">${exp}</span>`
-                ).join('');
-            }
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'chatgpt-message bot';
+            errorMessage.textContent = 'Sorry, I\'m having trouble connecting right now. Please try again later.';
+            messagesContainer.appendChild(errorMessage);
         }
     }
-    
-    // Update practice areas
-    if (websiteData.practiceAreas) {
-        websiteData.practiceAreas.forEach((area, index) => {
-            const serviceCard = document.querySelector(`.service-card:nth-child(${index + 1})`);
-            if (serviceCard) {
-                const title = serviceCard.querySelector('h3');
-                const description = serviceCard.querySelector('p');
-                
-                if (title) title.textContent = area.title;
-                if (description) description.textContent = area.description;
+
+    setupAdminSync() {
+        // Listen for changes from admin panel
+        const channel = new BroadcastChannel('admin-updates');
+        channel.onmessage = (event) => {
+            const { type, data } = event.data;
+            this.handleAdminUpdate(type, data);
+        };
+
+        // Listen for localStorage changes
+        window.addEventListener('storage', (e) => {
+            if (e.key && e.key.startsWith('admin_')) {
+                this.handleAdminUpdate('storage', { key: e.key, value: e.newValue });
             }
         });
     }
-    
-    // Update contact information
-    if (websiteData.contact) {
-        // Update contact section
-        const contactItems = document.querySelectorAll('.contact-details .contact-item');
-        if (contactItems.length >= 3) {
-            contactItems[0].innerHTML = `<strong>Phone:</strong> ${websiteData.contact.phone}`;
-            contactItems[1].innerHTML = `<strong>Email:</strong> ${websiteData.contact.email}`;
-            contactItems[2].innerHTML = `<strong>Location:</strong> ${websiteData.contact.address}`;
-        }
+
+    handleAdminUpdate(type, data) {
+        console.log('Admin update received:', type, data);
         
-        // Update footer
-        const footerSection = document.querySelector('.footer-section:nth-child(3)');
-        if (footerSection) {
-            const footerItems = footerSection.querySelectorAll('p');
-            if (footerItems.length >= 3) {
-                footerItems[1].textContent = `Phone: ${websiteData.contact.phone}`;
-                footerItems[2].textContent = `Email: ${websiteData.contact.email}`;
-                footerItems[3].textContent = websiteData.contact.address;
-            }
+        switch (type) {
+            case 'content_update':
+                this.updateContent(data);
+                break;
+            case 'settings_update':
+                this.updateSettings(data);
+                break;
+            case 'storage':
+                this.handleStorageUpdate(data);
+                break;
         }
     }
-    
-    // Update website settings
-    if (websiteData.settings) {
-        document.title = websiteData.settings.siteTitle;
+
+    updateContent(data) {
+        const { section, content } = data;
+        const element = document.querySelector(`[data-section="${section}"]`);
         
-        const metaDescription = document.querySelector('meta[name="description"]');
-        if (metaDescription) metaDescription.setAttribute('content', websiteData.settings.siteDescription);
-        
-        const metaKeywords = document.querySelector('meta[name="keywords"]');
-        if (metaKeywords) metaKeywords.setAttribute('content', websiteData.settings.metaKeywords);
-        
-        // Update CSS variables
-        document.documentElement.style.setProperty('--primary-color', websiteData.settings.primaryColor);
-        document.documentElement.style.setProperty('--secondary-color', websiteData.settings.secondaryColor);
+        if (element) {
+            gsap.to(element, {
+                opacity: 0,
+                duration: 0.3,
+                onComplete: () => {
+                    element.innerHTML = content;
+                    gsap.to(element, {
+                        opacity: 1,
+                        duration: 0.3
+                    });
+                }
+            });
+        }
+    }
+
+    updateSettings(data) {
+        // Update website settings
+        console.log('Updating settings:', data);
+    }
+
+    handleStorageUpdate(data) {
+        // Handle localStorage updates
+        console.log('Storage update:', data);
+    }
+
+    setupIntersectionObserver() {
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements with animation classes
+        document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .scale-in').forEach(el => {
+            observer.observe(el);
+        });
     }
 }
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new ModernLawWebsite();
+});
+
+// Export for use in other modules
+export default ModernLawWebsite;
