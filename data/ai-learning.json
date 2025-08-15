@@ -1,28 +1,7 @@
 {
   "patterns": {
     "user_dmjjrcgoiropyizhl0vqe": {
-      "mostVisitedSections": [
-        {
-          "section": "home",
-          "count": 5
-        },
-        {
-          "section": "about",
-          "count": 4
-        },
-        {
-          "section": "practice-areas",
-          "count": 2
-        },
-        {
-          "section": "reviews",
-          "count": 2
-        },
-        {
-          "section": "blog",
-          "count": 2
-        }
-      ],
+      "mostVisitedSections": [],
       "averageSessionDuration": 0,
       "conversionRate": 0,
       "bounceRate": 100,
