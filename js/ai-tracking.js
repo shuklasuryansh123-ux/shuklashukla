@@ -70,14 +70,17 @@ class AITracking {
             this.trackClick(e);
         });
 
-        // Track scroll
-        let scrollTimeout;
-        document.addEventListener('scroll', () => {
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                this.trackScroll();
-            }, 100);
-        });
+        // Track scroll (throttled)
+        let isTicking = false;
+        window.addEventListener('scroll', () => {
+            if (!isTicking) {
+                window.requestAnimationFrame(() => {
+                    this.trackScroll();
+                    isTicking = false;
+                });
+                isTicking = true;
+            }
+        }, { passive: true });
 
         // Track form submissions
         document.addEventListener('submit', (e) => {
@@ -256,18 +259,18 @@ class AITracking {
         });
     }
 
-    // Start periodic tracking
-    startPeriodicTracking() {
-        // Track engagement every 30 seconds
-        setInterval(() => {
-            this.trackEngagement();
-        }, 30000);
+            // Start periodic tracking
+        startPeriodicTracking() {
+            // Track engagement every 45 seconds to reduce network chatter
+            setInterval(() => {
+                this.trackEngagement();
+            }, 45000);
 
-        // Track performance every minute
-        setInterval(() => {
-            this.trackPerformance();
-        }, 60000);
-    }
+            // Track performance every 2 minutes
+            setInterval(() => {
+                this.trackPerformance();
+            }, 120000);
+        }
 
     // Track engagement
     trackEngagement() {
@@ -317,13 +320,16 @@ class AITracking {
 
         try {
             // Send to AI service
-            await fetch('/api/ai/track', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(trackingData)
-            });
+            if (document.visibilityState === 'visible') {
+                await fetch('/api/ai/track', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    keepalive: true,
+                    body: JSON.stringify(trackingData)
+                });
+            }
 
             // Also send to Google Analytics if available
             if (typeof gtag !== 'undefined') {
@@ -373,9 +379,17 @@ class AITracking {
     }
 }
 
-// Initialize AI tracking when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize AI tracking after load to avoid competing with main thread
+document.addEventListener('load', () => {
     window.aiTracking = new AITracking();
+});
+// Fallback if 'load' missed (e.g., cached), init on DOMContentLoaded with a delay
+document.addEventListener('DOMContentLoaded', () => {
+    if (!window.aiTracking) {
+        setTimeout(() => {
+            window.aiTracking = new AITracking();
+        }, 0);
+    }
 });
 
 // Export for use in other scripts
