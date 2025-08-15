@@ -263,12 +263,18 @@ app.get('/api/deployment-status', async (req, res) => {
 app.post('/api/save-all', async (req, res) => {
     try {
         const { websiteData } = req.body;
+        if (!websiteData || typeof websiteData !== 'object') {
+            return res.status(400).json({ error: 'Invalid website data' });
+        }
         
         // Save to content files
         const contentDir = path.join(__dirname, 'content');
         await fs.mkdir(contentDir, { recursive: true });
         
         for (const [section, data] of Object.entries(websiteData)) {
+            if (!/^[a-zA-Z0-9_-]+$/.test(section)) {
+                return res.status(400).json({ error: `Invalid section name: ${section}` });
+            }
             const filePath = path.join(contentDir, `${section}.json`);
             await fs.writeFile(filePath, JSON.stringify(data, null, 2));
         }
