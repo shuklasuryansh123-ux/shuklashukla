@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        .result { margin-top: 10px; padding: 10px; background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>Admin Panel Test</h1>
+    
+    <div class="test-section">
+        <h3>1. Test AI Insights API</h3>
+        <button onclick="testAIInsights()">Test AI Insights</button>
+        <div id="aiInsightsResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Test Bug Detection API</h3>
+        <button onclick="testBugDetection()">Test Bug Detection</button>
+        <div id="bugDetectionResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Test SEO Analysis API</h3>
+        <button onclick="testSEOAnalysis()">Test SEO Analysis</button>
+        <div id="seoAnalysisResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. Test Blog Generation API</h3>
+        <button onclick="testBlogGeneration()">Test Blog Generation</button>
+        <div id="blogGenerationResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>5. Test ChatGPT API</h3>
+        <button onclick="testChatGPT()">Test ChatGPT</button>
+        <div id="chatGPTResult" class="result"></div>
+    </div>
+
+    <script>
+        async function testAIInsights() {
+            try {
+                const response = await fetch('/api/ai/insights');
+                const data = await response.json();
+                document.getElementById('aiInsightsResult').innerHTML = 
+                    `<strong>Success!</strong><br>Performance Score: ${data.performance?.loadTime?.toFixed(0) || 'N/A'}ms<br>
+                     Suggestions: ${data.suggestions?.length || 0}<br>
+                     Recommendations: ${data.recommendations?.length || 0}`;
+            } catch (error) {
+                document.getElementById('aiInsightsResult').innerHTML = 
+                    `<strong>Error:</strong> ${error.message}`;
+            }
+        }
+
+        async function testBugDetection() {
+            try {
+                const response = await fetch('/api/ai/detect-bugs');
+                const data = await response.json();
+                document.getElementById('bugDetectionResult').innerHTML = 
+                    `<strong>Success!</strong><br>Bugs Found: ${data.bugs?.length || 0}<br>
+                     Files Scanned: ${data.bugs?.map(b => b.file).filter((v, i, a) => a.indexOf(v) === i).length || 0}`;
+            } catch (error) {
+                document.getElementById('bugDetectionResult').innerHTML = 
+                    `<strong>Error:</strong> ${error.message}`;
+            }
+        }
+
+        async function testSEOAnalysis() {
+            try {
+                const response = await fetch('/api/ai/seo-analysis');
+                const data = await response.json();
+                document.getElementById('seoAnalysisResult').innerHTML = 
+                    `<strong>Success!</strong><br>Title Score: ${data.title?.score || 0}/100<br>
+                     Content Score: ${data.content?.score || 0}/100<br>
+                     Mobile Score: ${data.mobile?.score || 0}/100<br>
+                     Speed Score: ${data.speed?.score || 0}/100`;
+            } catch (error) {
+                document.getElementById('seoAnalysisResult').innerHTML = 
+                    `<strong>Error:</strong> ${error.message}`;
+            }
+        }
+
+        async function testBlogGeneration() {
+            try {
+                const response = await fetch('/api/ai/generate-blogs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+                const data = await response.json();
+                document.getElementById('blogGenerationResult').innerHTML = 
+                    `<strong>Success!</strong><br>Blogs Generated: ${data.blogPosts?.length || 0}<br>
+                     First Blog: ${data.blogPosts?.[0]?.title || 'N/A'}`;
+            } catch (error) {
+                document.getElementById('blogGenerationResult').innerHTML = 
+                    `<strong>Error:</strong> ${error.message}`;
+            }
+        }
+
+        async function testChatGPT() {
+            try {
+                const response = await fetch('/api/ai/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: 'Hello, test message', context: 'test' })
+                });
+                const data = await response.json();
+                document.getElementById('chatGPTResult').innerHTML = 
+                    `<strong>Success!</strong><br>Response: ${data.response?.substring(0, 100) || 'N/A'}...`;
+            } catch (error) {
+                document.getElementById('chatGPTResult').innerHTML = 
+                    `<strong>Error:</strong> ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

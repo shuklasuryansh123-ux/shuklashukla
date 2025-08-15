@@ -1,0 +1,19 @@
+{
+  "founders": [
+    {
+      "name": "Advocate Suryansh Shukla",
+      "title": "Senior Partner & Corporate Law Specialist",
+      "description": "With over 15 years of experience in corporate law, Advocate Suryansh Shukla specializes in mergers & acquisitions, corporate governance, and complex business litigation. His expertise has helped numerous companies navigate complex legal challenges and achieve their business objectives.",
+      "expertise": ["Corporate Law", "M&A", "Business Litigation"],
+      "image": "suryansh-shukla.jpg"
+    },
+    {
+      "name": "Advocate Divyansh Shukla",
+      "title": "Senior Partner & Criminal Law Expert",
+      "description": "Advocate Divyansh Shukla brings extensive experience in criminal defense and civil litigation. His strategic approach to complex cases and dedication to protecting client rights has earned him recognition as one of the leading criminal law practitioners in the region.",
+      "expertise": ["Criminal Defense", "Civil Litigation", "Family Law"],
+      "image": "divyansh-shukla.jpg"
+    }
+  ],
+  "lastUpdated": "2025-01-20T10:00:00Z"
+}

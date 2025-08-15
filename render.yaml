@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: shukla-law-firm
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SITE_URL
+        generateValue: true
+    healthCheckPath: /health
+    autoDeploy: true
+    branch: main
+    repo: https://github.com/suryansh-shukla/shukla-law-firm
+    disk:
+      name: data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1

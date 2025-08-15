@@ -1,0 +1,239 @@
+/* Practice Areas Page Styles */
+.practice-header {
+    padding: 120px 0 4rem;
+    background: var(--gray-100);
+    text-align: center;
+}
+
+.practice-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--black);
+}
+
+.practice-header p {
+    font-size: 1.3rem;
+    color: var(--gray-600);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.practice-content {
+    padding: 4rem 0;
+    background: var(--white);
+}
+
+.practice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.practice-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 2.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.practice-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--black);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.practice-card:hover::before {
+    transform: scaleX(1);
+}
+
+.practice-card:hover {
+    border-color: var(--black);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation for practice cards */
+.practice-card {
+    animation: fadeInUp 0.8s ease forwards;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.practice-card:nth-child(1) { animation-delay: 0.1s; }
+.practice-card:nth-child(2) { animation-delay: 0.2s; }
+.practice-card:nth-child(3) { animation-delay: 0.3s; }
+.practice-card:nth-child(4) { animation-delay: 0.4s; }
+.practice-card:nth-child(5) { animation-delay: 0.5s; }
+.practice-card:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header animation */
+.practice-header {
+    animation: fadeInDown 1s ease forwards;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.practice-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    display: block;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.practice-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 1rem;
+}
+
+.practice-description {
+    color: var(--gray-600);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.practice-details {
+    border-top: 1px solid var(--gray-200);
+    padding-top: 2rem;
+}
+
+.practice-details h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 1rem;
+}
+
+.practice-details ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+.practice-details li {
+    color: var(--gray-700);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.practice-details li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--black);
+    font-weight: bold;
+}
+
+.practice-details p {
+    color: var(--gray-600);
+    font-size: 1rem;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .practice-header {
+        padding: 100px 0 3rem;
+    }
+    
+    .practice-header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .practice-header p {
+        font-size: 1.1rem;
+    }
+    
+    .practice-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .practice-card {
+        padding: 2rem;
+    }
+    
+    .practice-card h2 {
+        font-size: 1.8rem;
+    }
+    
+    .practice-icon {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .practice-header h1 {
+        font-size: 2rem;
+    }
+    
+    .practice-header p {
+        font-size: 1rem;
+    }
+    
+    .practice-card {
+        padding: 1.5rem;
+        margin: 0 1rem;
+    }
+    
+    .practice-card h2 {
+        font-size: 1.5rem;
+    }
+    
+    .practice-icon {
+        font-size: 2.5rem;
+    }
+    
+    .practice-details h3 {
+        font-size: 1.2rem;
+    }
+}

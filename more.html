@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notepad - Shukla & Shukla Associates</title>
+    <meta name="description" content="Rich text notepad for notes and documents">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="notepad.css">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VF1BQC45ZR"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VF1BQC45ZR');
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html">Shukla & Shukla Associates</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">Case Status</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="dropdown-item">Supreme Court</a></li>
+                        <li><a href="#" class="dropdown-item">High Court</a></li>
+                        <li><a href="#" class="dropdown-item">District Court</a></li>
+                        <li><a href="#" class="dropdown-item">Family Court</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" class="nav-link">Client Files</a></li>
+                <li><a href="index.html#practice-areas" class="nav-link">Practice Areas</a></li>
+                <li class="dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">More</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="index.html#reviews" class="dropdown-item">Client Reviews</a></li>
+                        <li><a href="index.html#gallery" class="dropdown-item">Gallery</a></li>
+                        <li><a href="index.html#blog" class="dropdown-item">Blog</a></li>
+                        <li><a href="index.html#about" class="dropdown-item">About</a></li>
+                        <li><a href="index.html#faq" class="dropdown-item">FAQs</a></li>
+                        <li><a href="more.html" class="dropdown-item active">Notepad</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Notepad Section -->
+    <section class="notepad-section">
+        <div class="container">
+            <h1>Rich Text Notepad</h1>
+            <p class="notepad-subtitle">Create, edit, and manage your notes with full rich text functionality</p>
+            
+            <!-- Toolbar -->
+            <div class="notepad-toolbar">
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="bold" title="Bold">
+                        <strong>B</strong>
+                    </button>
+                    <button class="toolbar-btn" data-command="italic" title="Italic">
+                        <em>I</em>
+                    </button>
+                    <button class="toolbar-btn" data-command="underline" title="Underline">
+                        <u>U</u>
+                    </button>
+                </div>
+                
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="insertUnorderedList" title="Bullet List">
+                        • List
+                    </button>
+                    <button class="toolbar-btn" data-command="insertOrderedList" title="Numbered List">
+                        1. List
+                    </button>
+                </div>
+                
+                <div class="toolbar-group">
+                    <select class="toolbar-select" id="headingSelect">
+                        <option value="">Normal Text</option>
+                        <option value="h1">Heading 1</option>
+                        <option value="h2">Heading 2</option>
+                        <option value="h3">Heading 3</option>
+                        <option value="h4">Heading 4</option>
+                    </select>
+                </div>
+                
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="createLink" title="Insert Link">
+                        🔗 Link
+                    </button>
+                    <button class="toolbar-btn" data-command="insertImage" title="Insert Image">
+                        🖼️ Image
+                    </button>
+                </div>
+                
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="justifyLeft" title="Align Left">
+                        ⬅️
+                    </button>
+                    <button class="toolbar-btn" data-command="justifyCenter" title="Align Center">
+                        ↔️
+                    </button>
+                    <button class="toolbar-btn" data-command="justifyRight" title="Align Right">
+                        ➡️
+                    </button>
+                </div>
+                
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" id="saveBtn" title="Save Note">
+                        💾 Save
+                    </button>
+                    <button class="toolbar-btn" id="loadBtn" title="Load Note">
+                        📂 Load
+                    </button>
+                    <button class="toolbar-btn" id="clearBtn" title="Clear All">
+                        🗑️ Clear
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Notepad Editor -->
+            <div class="notepad-container">
+                <div class="notepad-header">
+                    <input type="text" id="noteTitle" placeholder="Note Title" class="note-title-input">
+                    <div class="note-actions">
+                        <span id="wordCount">0 words</span>
+                        <span id="charCount">0 characters</span>
+                    </div>
+                </div>
+                
+                <div class="notepad-editor" id="notepadEditor" contenteditable="true">
+                    <p>Start typing your note here...</p>
+                </div>
+            </div>
+            
+            <!-- Notes List -->
+            <div class="notes-section">
+                <h3>Saved Notes</h3>
+                <div class="notes-list" id="notesList">
+                    <!-- Saved notes will appear here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Shukla & Shukla Associates</h3>
+                    <p>Professional legal services with integrity and excellence.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#about">About</a></li>
+                        <li><a href="index.html#practice-areas">Practice Areas</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p>Phone: +91 73899 94519</p>
+                    <p>Email: shukla.suryansh123@gmail.com</p>
+                    <p>Indore, Madhya Pradesh</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Shukla & Shukla Associates. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="notepad.js"></script>
+    <script src="js/ai-tracking.js"></script>
+</body>
+</html>

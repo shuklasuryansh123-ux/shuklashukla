@@ -1,0 +1,35 @@
+{
+  "patterns": {
+    "user_dmjjrcgoiropyizhl0vqe": {
+      "mostVisitedSections": [
+        {
+          "section": "home",
+          "count": 1
+        },
+        {
+          "section": "about",
+          "count": 1
+        },
+        {
+          "section": "practice-areas",
+          "count": 1
+        },
+        {
+          "section": "reviews",
+          "count": 1
+        },
+        {
+          "section": "blog",
+          "count": 1
+        }
+      ],
+      "averageSessionDuration": 0,
+      "conversionRate": 0,
+      "bounceRate": 100,
+      "preferredContentTypes": []
+    }
+  },
+  "decisions": [],
+  "suggestions": [],
+  "performanceHistory": []
+}

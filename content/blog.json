@@ -1,0 +1,38 @@
+{
+  "blogPosts": [
+    {
+      "id": 1,
+      "title": "Understanding Corporate Law in India",
+      "excerpt": "A comprehensive guide to corporate law practices and regulations in India...",
+      "content": "<h2>Understanding Corporate Law in India</h2><p>Corporate law in India is governed by the Companies Act, 2013, which provides a comprehensive framework for the incorporation, regulation, and winding up of companies. This legislation ensures transparency, accountability, and good corporate governance practices across all business entities operating in India.</p><p>The Companies Act, 2013, introduced several significant changes to improve corporate governance, enhance transparency, and protect the interests of stakeholders. Key provisions include:</p><ul><li>Enhanced disclosure requirements</li><li>Stricter compliance norms</li><li>Better protection for minority shareholders</li><li>Improved corporate social responsibility framework</li></ul><p>Understanding these legal frameworks is crucial for businesses operating in India to ensure compliance and avoid legal complications.</p>",
+      "category": "corporate",
+      "image": "📄",
+      "date": "2025-01-15",
+      "author": "Legal Team",
+      "tags": ["corporate law", "companies act", "compliance", "governance"]
+    },
+    {
+      "id": 2,
+      "title": "Family Law: Recent Changes and Implications",
+      "excerpt": "Exploring the latest amendments in family law and their impact on legal proceedings...",
+      "content": "<h2>Family Law: Recent Changes and Implications</h2><p>Recent amendments to family law have introduced significant changes in how divorce, child custody, and property division cases are handled. These changes aim to provide faster resolution and better protection for all parties involved.</p><p>The new provisions focus on:</p><ul><li>Streamlined divorce procedures</li><li>Enhanced child custody guidelines</li><li>Fair property division mechanisms</li><li>Improved domestic violence protection</li></ul><p>These changes reflect the evolving social dynamics and the need for more efficient and equitable family law proceedings.</p>",
+      "category": "family",
+      "image": "👨‍👩‍👧‍👦",
+      "date": "2025-01-10",
+      "author": "Legal Team",
+      "tags": ["family law", "divorce", "custody", "property division"]
+    },
+    {
+      "id": 3,
+      "title": "Real Estate Law: Property Rights and Disputes",
+      "excerpt": "Essential information about property rights, title verification, and dispute resolution...",
+      "content": "<h2>Real Estate Law: Property Rights and Disputes</h2><p>Real estate law encompasses various aspects including property rights, title verification, land acquisition, and dispute resolution. Understanding these legal frameworks is crucial for both buyers and sellers in real estate transactions.</p><p>Key areas of real estate law include:</p><ul><li>Property title verification</li><li>Land acquisition procedures</li><li>Construction and development regulations</li><li>Property tax compliance</li><li>Dispute resolution mechanisms</li></ul><p>Proper legal guidance in real estate matters can prevent costly disputes and ensure smooth property transactions.</p>",
+      "category": "real-estate",
+      "image": "🏠",
+      "date": "2025-01-05",
+      "author": "Legal Team",
+      "tags": ["real estate", "property rights", "title verification", "disputes"]
+    }
+  ],
+  "lastUpdated": "2025-01-20T10:00:00Z"
+}
