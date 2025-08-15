@@ -982,6 +982,7 @@ a:hover {
 .loading-screen.fade-out {
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
 }
 
 .loading-content {
