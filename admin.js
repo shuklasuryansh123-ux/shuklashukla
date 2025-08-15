@@ -41,21 +41,27 @@ class AdminPanel {
     }
     
     // Handle login
-    handleLogin(email, password) {
-        // Check for custom credentials first
-        const customCredentials = localStorage.getItem('adminCredentials');
-        if (customCredentials) {
-            const credentials = JSON.parse(customCredentials);
-            if (email === credentials.email && password === credentials.password) {
+    async handleLogin(email, password) {
+        try {
+            const response = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+            if (response.ok) {
                 this.isLoggedIn = true;
                 localStorage.setItem('adminLoggedIn', 'true');
                 this.showAdminPanel();
                 this.showNotification('Login successful! Welcome to Admin Panel.', 'success');
                 return true;
             }
+        } catch (error) {
+            console.error('Login API error:', error);
         }
         
-        // Fallback to default credentials
+        // Fallback to default credentials if API not configured
         const correctEmail = 'shukla.suryansh123@gmail.com';
         const correctPassword = '12032003';
         

@@ -197,6 +197,7 @@ app.post('/api/forgot-password', async (req, res) => {
         }
         
         const { email } = req.body;
+        if (!email) return res.status(400).json({ error: 'Email is required' });
         const passwordService = new PasswordResetService();
         await passwordService.sendPasswordResetEmail(email);
         
@@ -457,6 +458,25 @@ app.post('/api/ai/auto-optimize-traffic', async (req, res) => {
     } catch (error) {
         console.error('Auto-optimize error:', error);
         res.status(500).json({ error: 'Failed to auto-optimize traffic' });
+    }
+});
+
+app.post('/api/admin/login', async (req, res) => {
+    try {
+        if (!PasswordResetService) {
+            return res.status(500).json({ error: 'Auth service not available' });
+        }
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+        const passwordService = new PasswordResetService();
+        const ok = await passwordService.verifyCredentials(email, password);
+        if (ok) return res.json({ success: true });
+        return res.status(401).json({ error: 'Invalid credentials' });
+    } catch (error) {
+        console.error('Admin login error:', error);
+        res.status(500).json({ error: 'Failed to login' });
     }
 });
 

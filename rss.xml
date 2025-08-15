@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+  <title>Shukla & Shukla - Legal Blog</title>
+  <link>http://localhost:3000/blog.html</link>
+  <description>Latest legal insights and judgments</description>
+  <language>en-IN</language>
+  <item>
+    <title><![CDATA[Legal Insights: Latest Supreme Court Judgment - 15/8/2025]]></title>
+    <link>http://localhost:3000/blog.html#post-4</link>
+    <pubDate>Fri, 15 Aug 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[This comprehensive analysis covers the latest developments in Latest Supreme Court Judgment - 15/8/2025. Legal professionals and businesses must stay informed about these changes t...]]></description>
+    <guid isPermaLink="false">blog-4</guid>
+  </item>
+  <item>
+    <title><![CDATA[Legal Insights: Significant High Court Ruling This Week]]></title>
+    <link>http://localhost:3000/blog.html#post-5</link>
+    <pubDate>Fri, 15 Aug 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[This comprehensive analysis covers the latest developments in Significant High Court Ruling This Week. Legal professionals and businesses must stay informed about these changes to ...]]></description>
+    <guid isPermaLink="false">blog-5</guid>
+  </item>
+  <item>
+    <title><![CDATA[Understanding Corporate Law in India]]></title>
+    <link>http://localhost:3000/blog.html#post-1</link>
+    <pubDate>Wed, 15 Jan 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[A comprehensive guide to corporate law practices and regulations in India...]]></description>
+    <guid isPermaLink="false">blog-1</guid>
+  </item>
+  <item>
+    <title><![CDATA[Family Law: Recent Changes and Implications]]></title>
+    <link>http://localhost:3000/blog.html#post-2</link>
+    <pubDate>Fri, 10 Jan 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[Exploring the latest amendments in family law and their impact on legal proceedings...]]></description>
+    <guid isPermaLink="false">blog-2</guid>
+  </item>
+  <item>
+    <title><![CDATA[Real Estate Law: Property Rights and Disputes]]></title>
+    <link>http://localhost:3000/blog.html#post-3</link>
+    <pubDate>Sun, 05 Jan 2025 00:00:00 GMT</pubDate>
+    <description><![CDATA[Essential information about property rights, title verification, and dispute resolution...]]></description>
+    <guid isPermaLink="false">blog-3</guid>
+  </item>
+</channel>
+</rss>

@@ -1,6 +1,48 @@
 {
   "blogPosts": [
     {
+      "id": 4,
+      "title": "Legal Insights: Latest Supreme Court Judgment - 15/8/2025",
+      "excerpt": "This comprehensive analysis covers the latest developments in Latest Supreme Court Judgment - 15/8/2025. Legal professionals and businesses must stay informed about these changes t...",
+      "content": "This comprehensive analysis covers the latest developments in Latest Supreme Court Judgment - 15/8/2025. Legal professionals and businesses must stay informed about these changes to ensure compliance and make informed decisions.\n\nThe evolving legal landscape requires continuous learning and adaptation. Our team of experts provides detailed analysis and practical guidance on navigating these complex legal requirements.",
+      "category": "latest-supreme-court-judgment---15/8/2025",
+      "image": "https://api.unsplash.com/photos/random?query=legal%20documents%2C%20court%20building%2C%20professional%20setting&client_id=YOUR_UNSPLASH_API_KEY",
+      "date": "2025-08-15",
+      "author": "Legal Team",
+      "tags": [
+        "Latest Supreme Court Judgment - 15/8/2025",
+        "Legal Updates",
+        "Analysis"
+      ],
+      "keywords": [
+        "latest supreme court judgment - 15/8/2025",
+        "legal",
+        "law",
+        "updates"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Legal Insights: Significant High Court Ruling This Week",
+      "excerpt": "This comprehensive analysis covers the latest developments in Significant High Court Ruling This Week. Legal professionals and businesses must stay informed about these changes to ...",
+      "content": "This comprehensive analysis covers the latest developments in Significant High Court Ruling This Week. Legal professionals and businesses must stay informed about these changes to ensure compliance and make informed decisions.\n\nThe evolving legal landscape requires continuous learning and adaptation. Our team of experts provides detailed analysis and practical guidance on navigating these complex legal requirements.",
+      "category": "significant-high-court-ruling-this-week",
+      "image": "https://api.unsplash.com/photos/random?query=legal%20documents%2C%20court%20building%2C%20professional%20setting&client_id=YOUR_UNSPLASH_API_KEY",
+      "date": "2025-08-15",
+      "author": "Legal Team",
+      "tags": [
+        "Significant High Court Ruling This Week",
+        "Legal Updates",
+        "Analysis"
+      ],
+      "keywords": [
+        "significant high court ruling this week",
+        "legal",
+        "law",
+        "updates"
+      ]
+    },
+    {
       "id": 1,
       "title": "Understanding Corporate Law in India",
       "excerpt": "A comprehensive guide to corporate law practices and regulations in India...",
@@ -9,7 +51,12 @@
       "image": "📄",
       "date": "2025-01-15",
       "author": "Legal Team",
-      "tags": ["corporate law", "companies act", "compliance", "governance"]
+      "tags": [
+        "corporate law",
+        "companies act",
+        "compliance",
+        "governance"
+      ]
     },
     {
       "id": 2,
@@ -20,7 +67,12 @@
       "image": "👨‍👩‍👧‍👦",
       "date": "2025-01-10",
       "author": "Legal Team",
-      "tags": ["family law", "divorce", "custody", "property division"]
+      "tags": [
+        "family law",
+        "divorce",
+        "custody",
+        "property division"
+      ]
     },
     {
       "id": 3,
@@ -31,8 +83,13 @@
       "image": "🏠",
       "date": "2025-01-05",
       "author": "Legal Team",
-      "tags": ["real estate", "property rights", "title verification", "disputes"]
+      "tags": [
+        "real estate",
+        "property rights",
+        "title verification",
+        "disputes"
+      ]
     }
   ],
-  "lastUpdated": "2025-01-20T10:00:00Z"
+  "lastUpdated": "2025-08-15T06:54:23.491Z"
 }
